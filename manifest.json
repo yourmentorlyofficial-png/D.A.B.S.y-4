@@ -1,7 +1,7 @@
 {
   "name": "D.A.B.S.y",
   "short_name": "DABSy",
-  "description": "D.A.B.S.y, your AI desk and study buddy.",
+  "description": "D.A.B.S.y, your AI desk and study companion.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
