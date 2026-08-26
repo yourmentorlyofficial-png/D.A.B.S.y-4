@@ -1,10 +1,10 @@
-const CACHE_NAME = 'dabsy-v2';
+const CACHE_NAME = 'dabsy-v3';
 const ASSETS = [
   './index.html',
   './styles.css',
   './app.js',
   './manifest.json',
-  './icon.png'
+  './icon-512x512.png'
 ];
 
 self.addEventListener('install', (e) => {
@@ -33,4 +33,3 @@ self.addEventListener('fetch', (e) => {
     caches.match(e.request).then((cachedResponse) => cachedResponse || fetch(e.request))
   );
 });
-
