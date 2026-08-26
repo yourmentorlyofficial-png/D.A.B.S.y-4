@@ -1,3 +1,4 @@
+alert("DABSy JS IS RUNNING");
 const world = document.getElementById("dabsyWorld");
 const face = document.getElementById("dabsyFace");
 const faceGlow = document.getElementById("faceGlow");
