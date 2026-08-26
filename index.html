@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="D.A.B.S.y - AI Desk Study Buddy">
+  <title>D.A.B.S.y</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+  <main id="dabsyWorld">
+    <div id="faceGlow" aria-hidden="true"></div>
+
+    <section id="dabsyFace" aria-label="DABSy">
+      <div class="eyes">
+        <div class="eye"><div class="eye-highlight"></div></div>
+        <div class="eye"><div class="eye-highlight"></div></div>
+      </div>
+      <div id="mouth" aria-hidden="true"></div>
+    </section>
+
+    <section id="dialogue">
+      <div id="status">DABSy</div>
+      <div id="speech">Hello Swagat.</div>
+    </section>
+
+    <div id="bubbleMenu" aria-hidden="true">
+      <button id="studyBubble" class="bubble" aria-label="Study Mode">
+        <span>📚</span>
+        <small>Study</small>
+      </button>
+      <button id="settingsBubble" class="bubble" aria-label="Settings">
+        <span>⚙️</span>
+        <small>Settings</small>
+      </button>
+    </div>
+
+    <div id="settingsPanel" class="overlay">
+      <div class="settings-card">
+        <button id="closeSettings" class="close-button">×</button>
+        <div class="settings-title">D.A.B.S.y</div>
+        <div class="settings-subtitle">Gemini brain</div>
+        <label>Gemini API key</label>
+        <input id="apiKeyInput" type="password" placeholder="Paste your Gemini API key" autocomplete="off">
+        <button id="saveKey" class="save-button">Connect Gemini</button>
+        <div id="keyStatus" class="key-status"></div>
+      </div>
+    </div>
+
+    <div id="studyBadge">📚 STUDY MODE</div>
+    <div id="hint">Tap me</div>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
