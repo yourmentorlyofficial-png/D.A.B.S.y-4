@@ -8,539 +8,141 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <meta
-    name="theme-color"
-    content="#000000"
-  >
+  <meta name="theme-color" content="#000000">
 
   <meta
     name="description"
-    content="D.A.B.S.y - your AI desk and study buddy"
+    content="D.A.B.S.y - an AI desk and study companion"
   >
 
-  <link
-    rel="manifest"
-    href="./manifest.json"
-  >
+  <link rel="manifest" href="./manifest.json">
 
-  <link
-    rel="icon"
-    href="./icon.png"
-    type="image/png"
-  >
+  <link rel="icon" href="./icon.png" type="image/png">
 
   <title>D.A.B.S.y</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #000;
-      color: #fff;
-      font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    }
-
-    body {
-      touch-action: manipulation;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    #dabsyWorld {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      background:
-        radial-gradient(
-          circle at center,
-          rgba(35, 35, 45, 0.22),
-          #000 55%
-        );
-      user-select: none;
-    }
-
-    #faceGlow {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: min(72vw, 520px);
-      height: min(42vw, 300px);
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.035);
-      filter: blur(55px);
-      pointer-events: none;
-      transition: transform 0.4s ease;
-    }
-
-    #dabsyFace {
-      position: relative;
-      width: min(88vw, 650px);
-      height: min(55vw, 400px);
-      max-height: 45vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: min(13vw, 100px);
-      z-index: 2;
-      transition:
-        transform 0.4s ease,
-        filter 0.4s ease;
-    }
-
-    .eye {
-      width: min(23vw, 150px);
-      height: min(30vw, 190px);
-      min-width: 75px;
-      min-height: 100px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow:
-        0 0 18px rgba(255,255,255,.5),
-        0 0 55px rgba(255,255,255,.16);
-      transition:
-        transform 0.35s ease,
-        height 0.2s ease,
-        border-radius 0.2s ease;
-    }
-
-    .eye.left {
-      transform-origin: center;
-    }
-
-    .eye.right {
-      transform-origin: center;
-    }
-
-    .blink .eye {
-      height: 10px;
-      min-height: 10px;
-      border-radius: 50%;
-      transform: scaleY(0.4);
-    }
-
-    .look-left .eye {
-      transform: translateX(-12px);
-    }
-
-    .look-right .eye {
-      transform: translateX(12px);
-    }
-
-    .listening #dabsyFace {
-      animation: listening 1.1s ease-in-out infinite;
-    }
-
-    .thinking #dabsyFace {
-      animation: thinking 1.5s ease-in-out infinite;
-    }
-
-    .speaking #dabsyFace {
-      animation: speaking .8s ease-in-out infinite;
-    }
-
-    .purring #dabsyFace {
-      transform: scale(1.025);
-    }
-
-    .dizzy #dabsyFace {
-      animation: dizzy 0.25s linear infinite;
-    }
-
-    @keyframes listening {
-      0%, 100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.045);
-      }
-    }
-
-    @keyframes thinking {
-      0%, 100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-7px);
-      }
-    }
-
-    @keyframes speaking {
-      0%, 100% {
-        transform: scaleY(1);
-      }
-
-      50% {
-        transform: scaleY(0.96);
-      }
-    }
-
-    @keyframes dizzy {
-      0% {
-        transform: rotate(-4deg);
-      }
-
-      50% {
-        transform: rotate(4deg);
-      }
-
-      100% {
-        transform: rotate(-4deg);
-      }
-    }
-
-    #conversation {
-      position: absolute;
-      left: 50%;
-      bottom: max(7vh, 55px);
-      transform: translateX(-50%);
-      width: min(88vw, 700px);
-      text-align: center;
-      z-index: 5;
-      pointer-events: none;
-    }
-
-    #status {
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      opacity: .55;
-      margin-bottom: 9px;
-    }
-
-    #speech {
-      font-size: clamp(16px, 4.2vw, 25px);
-      line-height: 1.45;
-      max-height: 22vh;
-      overflow-y: auto;
-      text-shadow: 0 0 18px rgba(255,255,255,.1);
-      scrollbar-width: none;
-    }
-
-    #speech::-webkit-scrollbar {
-      display: none;
-    }
-
-    #hint {
-      position: absolute;
-      left: 50%;
-      bottom: 20px;
-      transform: translateX(-50%);
-      opacity: .28;
-      font-size: 11px;
-      z-index: 5;
-      pointer-events: none;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    #studyBadge {
-      position: absolute;
-      top: max(18px, env(safe-area-inset-top));
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      opacity: 0;
-      padding: 7px 13px;
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 999px;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: .3s ease;
-      z-index: 10;
-    }
-
-    .study-mode #studyBadge {
-      opacity: .8;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    #bubbleMenu {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 20;
-    }
-
-    .bubble {
-      position: absolute;
-      width: 58px;
-      height: 58px;
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 50%;
-      background: rgba(15,15,18,.9);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      opacity: 0;
-      transform: scale(.5);
-      transition: .25s ease;
-      pointer-events: none;
-      box-shadow: 0 8px 30px rgba(0,0,0,.4);
-    }
-
-    .menu-open .bubble {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: auto;
-    }
-
-    #studyBubble {
-      left: calc(50% - 115px);
-      top: calc(50% - 115px);
-    }
-
-    #settingsBubble {
-      left: calc(50% + 57px);
-      top: calc(50% - 115px);
-    }
-
-    .bubble span {
-      font-size: 10px;
-      text-align: center;
-      line-height: 1.2;
-    }
-
-    .bubble:active {
-      transform: scale(.9);
-    }
-
-    #settingsPanel {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.78);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
-      opacity: 0;
-      visibility: hidden;
-      transition: .25s ease;
-      z-index: 100;
-    }
-
-    #settingsPanel.open {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .settings-card {
-      width: min(92vw, 430px);
-      padding: 25px;
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: 24px;
-      background: rgba(18,18,21,.96);
-      box-shadow: 0 25px 80px rgba(0,0,0,.6);
-    }
-
-    .settings-card h2 {
-      margin: 0 0 7px;
-      font-size: 24px;
-    }
-
-    .settings-card p {
-      margin: 0 0 18px;
-      color: rgba(255,255,255,.55);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    #apiKeyInput {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: 12px;
-      outline: none;
-      background: #09090b;
-      color: #fff;
-      margin-bottom: 10px;
-    }
-
-    #apiKeyInput:focus {
-      border-color: rgba(255,255,255,.4);
-    }
-
-    .settings-actions {
-      display: flex;
-      gap: 9px;
-    }
-
-    .settings-actions button {
-      flex: 1;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: #fff;
-      color: #000;
-      cursor: pointer;
-    }
-
-    #closeSettings {
-      background: transparent;
-      color: #fff;
-    }
-
-    #keyStatus {
-      min-height: 18px;
-      margin: 8px 0 15px;
-      font-size: 12px;
-      color: rgba(255,255,255,.5);
-    }
-
-    .error #faceGlow {
-      animation: errorGlow .35s ease-in-out 3;
-    }
-
-    @keyframes errorGlow {
-      50% {
-        transform:
-          translate(-50%, -50%)
-          scale(1.18);
-      }
-    }
-
-    @media (max-width: 500px) {
-      #dabsyFace {
-        gap: 12vw;
-      }
-
-      .eye {
-        width: 22vw;
-        height: 29vw;
-      }
-
-      #speech {
-        max-height: 24vh;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
 
   <main id="dabsyWorld">
 
-    <div id="faceGlow"></div>
+    <div id="backgroundGlow"></div>
 
-    <div id="dabsyFace" aria-label="DABSy">
+    <!-- D.A.B.S.y -->
+    <section id="character">
 
-      <div class="eye left"></div>
-      <div class="eye right"></div>
+      <div id="faceGlow"></div>
 
-    </div>
+      <div id="dabsyFace">
 
-    <div id="conversation">
+        <div class="eye left-eye">
+          <div class="eyeHighlight"></div>
+        </div>
+
+        <div class="eye right-eye">
+          <div class="eyeHighlight"></div>
+        </div>
+
+      </div>
+
+      <!-- Rarely visible hands -->
+      <div id="hands">
+
+        <div id="leftHand" class="hand">
+          <span></span>
+        </div>
+
+        <div id="rightHand" class="hand">
+          <span></span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Dynamic study/content area -->
+    <section id="contentArea">
+
+      <div id="contentTitle"></div>
+
+      <div id="contentText"></div>
+
+      <div id="visualArea"></div>
+
+    </section>
+
+    <!-- Conversation -->
+    <section id="conversation">
 
       <div id="status">
-        Starting DABSy...
+        DABSy
       </div>
 
       <div id="speech">
         Hello.
       </div>
 
+    </section>
+
+    <!-- Study indicator -->
+    <div id="studyBadge">
+      📚 STUDY MODE
     </div>
 
-    <div id="studyBadge">
-      Study Mode
+    <!-- Controls -->
+    <div id="controls">
+
+      <button id="studyBubble" class="bubble">
+        <span>📚</span>
+        <small>Study</small>
+      </button>
+
+      <button id="settingsBubble" class="bubble">
+        <span>⚙️</span>
+        <small>Settings</small>
+      </button>
+
     </div>
 
     <div id="hint">
-      Tap to talk · Double tap for controls
-    </div>
-
-    <div
-      id="bubbleMenu"
-      aria-hidden="true"
-    >
-
-      <button
-        id="studyBubble"
-        class="bubble"
-        aria-label="Toggle Study Mode"
-      >
-        <span>📚<br>Study</span>
-      </button>
-
-      <button
-        id="settingsBubble"
-        class="bubble"
-        aria-label="Open Settings"
-      >
-        <span>⚙️<br>Settings</span>
-      </button>
-
+      Tap D.A.B.S.y to talk
     </div>
 
   </main>
 
-  <section
-    id="settingsPanel"
-    aria-hidden="true"
-  >
+  <!-- Settings -->
+  <section id="settingsPanel">
 
-    <div class="settings-card">
+    <div class="settingsCard">
 
-      <h2>⚙️ D.A.B.S.y</h2>
+      <button
+        id="closeSettings"
+        class="closeButton"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+      <h2>D.A.B.S.y</h2>
 
       <p>
-        Connect Gemini to give D.A.B.S.y its brain.
+        Give D.A.B.S.y its Gemini brain.
       </p>
 
       <input
         id="apiKeyInput"
         type="password"
+        placeholder="Gemini API key"
         autocomplete="off"
-        placeholder="Paste Gemini API key"
       >
 
       <div id="keyStatus"></div>
 
-      <div class="settings-actions">
-
-        <button
-          id="closeSettings"
-          type="button"
-        >
-          Cancel
-        </button>
-
-        <button
-          id="saveKey"
-          type="button"
-        >
-          Connect Gemini
-        </button>
-
-      </div>
+      <button id="saveKey" class="primaryButton">
+        Connect Gemini
+      </button>
 
     </div>
 
@@ -549,4 +151,4 @@
   <script src="./app.js"></script>
 
 </body>
-  </html>
+</html>
