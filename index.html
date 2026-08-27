@@ -1,126 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
-  <meta name="description" content="D.A.B.S.y - AI desk and study companion">
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./icon-512.png" type="image/png">
-  <link rel="stylesheet" href="./styles.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#000000"
+  >
+
+  <meta
+    name="description"
+    content="D.A.B.S.y - AI desk and study companion"
+  >
+
+  <!-- PWA -->
+  <link
+    rel="manifest"
+    href="./manifest.json"
+  >
+
+  <!-- App icon -->
+  <link
+    rel="icon"
+    href="./icon-512.png"
+    type="image/png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="./icon-512.png"
+  >
+
   <title>D.A.B.S.y</title>
+
+  <link
+    rel="stylesheet"
+    href="./styles.css"
+  >
+
 </head>
 
 <body>
 
-<main id="dabsyWorld">
+  <!-- ==================================================
+       D.A.B.S.y WORLD
+  ================================================== -->
 
-  <div id="backgroundGlow"></div>
+  <main id="dabsyWorld">
 
-  <section id="character">
+    <!-- Ambient background -->
+    <div id="backgroundGlow"></div>
 
-    <div id="faceGlow"></div>
 
-    <div id="dabsyFace">
+    <!-- ==================================================
+         CHARACTER
+    ================================================== -->
 
-      <div class="eye left-eye">
-        <div class="eyeHighlight"></div>
-      </div>
-
-      <div class="eye right-eye">
-        <div class="eyeHighlight"></div>
-      </div>
-
-    </div>
-
-    <div id="hands">
-      <div id="leftHand" class="hand">
-        <span></span>
-      </div>
-
-      <div id="rightHand" class="hand">
-        <span></span>
-      </div>
-    </div>
-
-  </section>
-
-  <section id="contentArea">
-
-    <div id="contentTitle"></div>
-
-    <div id="contentText"></div>
-
-    <div id="visualArea"></div>
-
-  </section>
-
-  <section id="conversation">
-
-    <div id="status">DABSy</div>
-
-    <div id="speech">
-      Hello! I'm DABSy. 💙
-    </div>
-
-  </section>
-
-  <div id="studyBadge">
-    📚 STUDY MODE
-  </div>
-
-  <div id="bubbleMenu" aria-hidden="true">
-
-    <button id="studyBubble" class="bubble">
-      <span>📚</span>
-      <small>Study</small>
-    </button>
-
-    <button id="settingsBubble" class="bubble">
-      <span>⚙️</span>
-      <small>Settings</small>
-    </button>
-
-  </div>
-
-  <div id="hint">
-    Tap & hold to talk
-  </div>
-
-</main>
-
-<section id="settingsPanel">
-
-  <div class="settingsCard">
-
-    <button id="closeSettings" class="closeButton">
-      ×
-    </button>
-
-    <h2>D.A.B.S.y</h2>
-
-    <p>
-      Connect Gemini to give D.A.B.S.y its brain.
-    </p>
-
-    <input
-      id="apiKeyInput"
-      type="password"
-      placeholder="Gemini API key"
-      autocomplete="off"
+    <section
+      id="character"
+      aria-label="D.A.B.S.y"
     >
 
-    <div id="keyStatus"></div>
+      <div id="faceGlow"></div>
 
-    <button id="saveKey" class="primaryButton">
-      Connect Gemini
-    </button>
 
-  </div>
+      <div id="dabsyFace">
 
-</section>
+        <div class="eye left-eye">
+          <div class="eyeHighlight"></div>
+        </div>
 
-<script src="./app.js"></script>
+        <div class="eye right-eye">
+          <div class="eyeHighlight"></div>
+        </div>
+
+      </div>
+
+
+      <!-- Hands -->
+
+      <div id="hands">
+
+        <div
+          id="leftHand"
+          class="hand"
+        >
+          <span></span>
+        </div>
+
+        <div
+          id="rightHand"
+          class="hand"
+        >
+          <span></span>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         STUDY / LARGE CONTENT
+    ================================================== -->
+
+    <section id="contentArea">
+
+      <div id="contentTitle"></div>
+
+      <div id="contentText"></div>
+
+      <div id="visualArea"></div>
+
+    </section>
+
+
+    <!-- ==================================================
+         CONVERSATION
+    ================================================== -->
+
+    <section
+      id="conversation"
+      aria-live="polite"
+    >
+
+      <div id="status">
+        DABSy
+      </div>
+
+      <div id="speech">
+        Hello! I'm DABSy. 💙
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         STUDY BADGE
+    ================================================== -->
+
+    <div id="studyBadge">
+      📚 STUDY MODE
+    </div>
+
+
+    <!-- ==================================================
+         MENU
+    ================================================== -->
+
+    <div
+      id="bubbleMenu"
+      aria-hidden="true"
+    >
+
+      <button
+        id="studyBubble"
+        class="bubble"
+        type="button"
+        aria-label="Toggle Study Mode"
+      >
+
+        <span>📚</span>
+        <small>Study</small>
+
+      </button>
+
+
+      <button
+        id="settingsBubble"
+        class="bubble"
+        type="button"
+        aria-label="Open Settings"
+      >
+
+        <span>⚙️</span>
+        <small>Settings</small>
+
+      </button>
+
+    </div>
+
+
+    <!-- ==================================================
+         INTERACTION HINT
+    ================================================== -->
+
+    <div id="hint">
+      Tap &amp; hold D.A.B.S.y to talk
+    </div>
+
+  </main>
+
+
+  <!-- ==================================================
+       SETTINGS
+  ================================================== -->
+
+  <section
+    id="settingsPanel"
+    aria-hidden="true"
+  >
+
+    <div
+      class="settingsCard"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="settingsTitle"
+    >
+
+      <button
+        id="closeSettings"
+        class="closeButton"
+        type="button"
+        aria-label="Close settings"
+      >
+        ×
+      </button>
+
+
+      <h2 id="settingsTitle">
+        D.A.B.S.y
+      </h2>
+
+
+      <p>
+        Connect Gemini to give D.A.B.S.y its brain.
+      </p>
+
+
+      <input
+        id="apiKeyInput"
+        type="password"
+        placeholder="Gemini API key"
+        autocomplete="off"
+        spellcheck="false"
+      >
+
+
+      <div
+        id="keyStatus"
+        aria-live="polite"
+      ></div>
+
+
+      <button
+        id="saveKey"
+        class="primaryButton"
+        type="button"
+      >
+        Connect Gemini
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       APP
+  ================================================== -->
+
+  <script src="./app.js"></script>
+
+
+  <!-- ==================================================
+       SERVICE WORKER
+  ================================================== -->
+
+  <script>
+
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener(
+        "load",
+        () => {
+
+          navigator.serviceWorker
+            .register("./sw.js", {
+              scope: "./"
+            })
+
+            .then(
+              registration => {
+
+                console.log(
+                  "D.A.B.S.y Service Worker ready:",
+                  registration.scope
+                );
+
+              }
+            )
+
+            .catch(
+              error => {
+
+                console.error(
+                  "D.A.B.S.y Service Worker error:",
+                  error
+                );
+
+              }
+            );
+
+        }
+      );
+
+    }
+
+  </script>
 
 </body>
 </html>
