@@ -1,17 +1,13 @@
 {
   "name": "D.A.B.S.y",
   "short_name": "DABSy",
-  "description": "D.A.B.S.y, your AI desk and study companion.",
+  "description": "D.A.B.S.y - AI desk and study companion",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "categories": [
-    "education",
-    "productivity"
-  ],
   "icons": [
     {
       "src": "./icon.png",
