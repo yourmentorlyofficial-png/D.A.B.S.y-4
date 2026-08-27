@@ -1,7 +1,13 @@
 /* =========================================================
-   D.A.B.S.y
-   CHARACTER ENGINE
-========================================================= */
+   D.A.B.S.y — PERSONALITY CORE
+   Full app.js replacement
+   ========================================================= */
+
+"use strict";
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
 
 const world = document.getElementById("dabsyWorld");
 const face = document.getElementById("dabsyFace");
@@ -19,6 +25,7 @@ const apiKeyInput = document.getElementById("apiKeyInput");
 const saveKey = document.getElementById("saveKey");
 const keyStatus = document.getElementById("keyStatus");
 
+const contentArea = document.getElementById("contentArea");
 const contentTitle = document.getElementById("contentTitle");
 const contentText = document.getElementById("contentText");
 
@@ -28,7 +35,7 @@ const rightHand = document.getElementById("rightHand");
 
 /* =========================================================
    STATE
-========================================================= */
+   ========================================================= */
 
 let listening = false;
 let thinking = false;
@@ -36,24 +43,30 @@ let speaking = false;
 let menuOpen = false;
 
 let touchTimer = null;
-let petTimer = null;
+let touchStartX = 0;
+let touchStartY = 0;
 
 let recognition = null;
-let voices = [];
-
-let petTouches = 0;
-let lastPetTime = 0;
 
 let studyMode =
   localStorage.getItem("dabsy_study_mode") === "true";
 
+let lastInteraction = Date.now();
+let idleTimer = null;
+let expressionTimer = null;
+let easterEggCooldown = false;
+
 
 /* =========================================================
-   BASIC UI
-========================================================= */
+   SMALL HELPERS
+   ========================================================= */
+
+function isBusy() {
+  return listening || thinking || speaking;
+}
+
 
 function setState(title, text) {
-
   if (status) {
     status.textContent = title;
   }
@@ -62,41 +75,69 @@ function setState(title, text) {
     speech.textContent = text;
   }
 
+  lastInteraction = Date.now();
 }
 
 
 function updateStudyMode() {
-
   document.body.classList.toggle(
     "study-mode",
     studyMode
   );
-
 }
 
 
-function closeMenu() {
+function clearExpressions() {
+  if (!face) return;
 
+  face.classList.remove(
+    "blink",
+    "look-left",
+    "look-right",
+    "happy",
+    "confused",
+    "surprised",
+    "sleepy",
+    "sad",
+    "curious"
+  );
+}
+
+
+function expression(name, duration = 900) {
+  if (!face) return;
+
+  clearExpressions();
+
+  face.classList.add(name);
+
+  if (duration > 0) {
+    setTimeout(() => {
+      face.classList.remove(name);
+    }, duration);
+  }
+}
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+function closeMenu() {
   menuOpen = false;
 
-  world.classList.remove(
-    "menu-open"
-  );
+  world.classList.remove("menu-open");
 
   if (bubbleMenu) {
-
     bubbleMenu.setAttribute(
       "aria-hidden",
       "true"
     );
-
   }
-
 }
 
 
 function toggleMenu() {
-
   menuOpen = !menuOpen;
 
   world.classList.toggle(
@@ -105,139 +146,39 @@ function toggleMenu() {
   );
 
   if (bubbleMenu) {
-
     bubbleMenu.setAttribute(
       "aria-hidden",
       String(!menuOpen)
     );
-
   }
 
-}
-
-
-/* =========================================================
-   EXPRESSIONS
-========================================================= */
-
-const expressions = [
-  "happy",
-  "sad",
-  "curious",
-  "confused",
-  "surprised",
-  "sleepy"
-];
-
-
-function clearExpressions() {
-
-  expressions.forEach(
-    expression => {
-
-      face.classList.remove(
-        expression
-      );
-
-    }
-  );
-
-}
-
-
-function expression(name, duration = 1200) {
-
-  if (!face) {
-    return;
+  if (menuOpen) {
+    expression("curious", 700);
   }
-
-  clearExpressions();
-
-  face.classList.add(name);
-
-  setTimeout(
-    () => {
-
-      face.classList.remove(name);
-
-    },
-    duration
-  );
-
-}
-
-
-/* =========================================================
-   PET / RUB
-========================================================= */
-
-function petDABSy() {
-
-  const now = Date.now();
-
-  petTouches++;
-
-  lastPetTime = now;
-
-  clearTimeout(petTimer);
-
-  world.classList.add(
-    "pet-reaction"
-  );
-
-  expression(
-    "happy",
-    700
-  );
-
-  randomHand();
-
-  petTimer = setTimeout(
-    () => {
-
-      world.classList.remove(
-        "pet-reaction"
-      );
-
-    },
-    550
-  );
-
-
-  /*
-     Rare response after several interactions.
-  */
-
-  if (
-    petTouches >= 6 &&
-    now - lastPetTime < 3000
-  ) {
-
-    petTouches = 0;
-
-    setState(
-      "DABSy",
-      "Hehe... okay, I noticed that. 💙"
-    );
-
-    speak(
-      "Hehe... okay, I noticed that."
-    );
-
-  }
-
 }
 
 
 /* =========================================================
    TOUCH / INTERACTION
-========================================================= */
+   =========================================================
+
+   Tap:
+     gentle reaction
+
+   Long press:
+     microphone
+
+   Double tap:
+     menu
+
+   Drag/rub:
+     cute pet reaction
+   ========================================================= */
 
 function setupTouch() {
 
-  let pointerDown = false;
-  let startX = 0;
-  let startY = 0;
+  if (!world) return;
+
 
   world.addEventListener(
     "pointerdown",
@@ -247,22 +188,21 @@ function setupTouch() {
         event.target.closest(".bubble") ||
         event.target.closest(".settingsCard")
       ) {
-
         return;
-
       }
 
-      pointerDown = true;
-
-      startX = event.clientX;
-      startY = event.clientY;
+      touchStartX = event.clientX;
+      touchStartY = event.clientY;
 
       clearTimeout(touchTimer);
 
-      touchTimer = setTimeout(
-        startListening,
-        320
-      );
+      touchTimer = setTimeout(() => {
+
+        if (!isBusy()) {
+          startListening();
+        }
+
+      }, 420);
 
     }
   );
@@ -272,41 +212,30 @@ function setupTouch() {
     "pointermove",
     event => {
 
-      if (!pointerDown) {
+      if (
+        event.target.closest(".bubble") ||
+        event.target.closest(".settingsCard")
+      ) {
         return;
       }
 
-      /*
-         Small finger movement around the face
-         counts as a pet/rub.
-      */
-
       const dx =
-        Math.abs(
-          event.clientX - startX
-        );
+        Math.abs(event.clientX - touchStartX);
 
       const dy =
-        Math.abs(
-          event.clientY - startY
-        );
+        Math.abs(event.clientY - touchStartY);
 
-      if (
-        dx > 12 ||
-        dy > 12
-      ) {
 
-        clearTimeout(
-          touchTimer
-        );
+      /*
+        Moving your finger around D.A.B.S.y
+        acts like gently rubbing/petting.
+      */
+
+      if (dx > 12 || dy > 12) {
+
+        clearTimeout(touchTimer);
 
         petDABSy();
-
-        startX =
-          event.clientX;
-
-        startY =
-          event.clientY;
 
       }
 
@@ -316,13 +245,20 @@ function setupTouch() {
 
   world.addEventListener(
     "pointerup",
-    () => {
+    event => {
 
-      pointerDown = false;
+      clearTimeout(touchTimer);
 
-      clearTimeout(
-        touchTimer
-      );
+      if (
+        event.target.closest(".bubble") ||
+        event.target.closest(".settingsCard")
+      ) {
+        return;
+      }
+
+      if (!isBusy()) {
+        gentleTapReaction();
+      }
 
     }
   );
@@ -331,13 +267,7 @@ function setupTouch() {
   world.addEventListener(
     "pointercancel",
     () => {
-
-      pointerDown = false;
-
-      clearTimeout(
-        touchTimer
-      );
-
+      clearTimeout(touchTimer);
     }
   );
 
@@ -350,9 +280,7 @@ function setupTouch() {
         event.target.closest(".bubble") ||
         event.target.closest(".settingsCard")
       ) {
-
         return;
-
       }
 
       toggleMenu();
@@ -364,212 +292,318 @@ function setupTouch() {
 
 
 /* =========================================================
-   MENU
-========================================================= */
+   TAP REACTION
+   ========================================================= */
 
-function setupMenu() {
+function gentleTapReaction() {
 
-  if (!studyBubble || !settingsBubble) {
+  lastInteraction = Date.now();
+
+  const reactions = [
+    "happy",
+    "curious",
+    "surprised"
+  ];
+
+  const reaction =
+    reactions[
+      Math.floor(
+        Math.random() * reactions.length
+      )
+    ];
+
+  expression(reaction, 700);
+
+  maybeEasterEgg();
+}
+
+
+/* =========================================================
+   PET / RUB
+   ========================================================= */
+
+function petDABSy() {
+
+  if (isBusy()) return;
+
+  lastInteraction = Date.now();
+
+  world.classList.add("petting");
+
+  expression("happy", 550);
+
+  setState(
+    "DABSy",
+    randomPetMessage()
+  );
+
+  showHand();
+
+  setTimeout(() => {
+    world.classList.remove("petting");
+  }, 600);
+
+}
+
+
+function randomPetMessage() {
+
+  const messages = [
+    "Hehe. ✨",
+    "That tickles.",
+    "Okay okay, I noticed. 💙",
+    "Boop detected.",
+    "You found the pet button.",
+    "Processing affection...",
+    "Tiny happiness acquired.",
+    "I approve of this interaction.",
+    "Again? 👀",
+    "DABSy.exe feels appreciated."
+  ];
+
+  return messages[
+    Math.floor(
+      Math.random() * messages.length
+    )
+  ];
+
+}
+
+
+/* =========================================================
+   HANDS
+   ========================================================= */
+
+function showHand() {
+
+  const hand =
+    Math.random() > 0.5
+      ? leftHand
+      : rightHand;
+
+  if (!hand) return;
+
+  hand.classList.add("visible");
+
+  setTimeout(() => {
+
+    hand.classList.remove("visible");
+
+  }, 900);
+
+}
+
+
+function randomHand() {
+
+  if (Math.random() > 0.45) {
     return;
   }
 
+  showHand();
 
-  studyBubble.addEventListener(
-    "click",
-    event => {
+}
 
-      event.stopPropagation();
 
-      studyMode = !studyMode;
+/* =========================================================
+   MENU SETUP
+   ========================================================= */
 
-      localStorage.setItem(
-        "dabsy_study_mode",
-        String(studyMode)
-      );
+function setupMenu() {
 
-      updateStudyMode();
+  if (studyBubble) {
 
-      closeMenu();
+    studyBubble.addEventListener(
+      "click",
+      event => {
 
-      if (studyMode) {
+        event.stopPropagation();
 
-        expression(
-          "happy"
+        studyMode = !studyMode;
+
+        localStorage.setItem(
+          "dabsy_study_mode",
+          String(studyMode)
         );
 
-        setState(
-          "Study Mode",
-          "Study mode activated. What are we learning?"
-        );
+        updateStudyMode();
 
-        speak(
-          "Study mode activated. What are we learning?"
-        );
+        closeMenu();
 
-      } else {
+        if (studyMode) {
 
-        expression(
-          "happy"
-        );
+          expression("happy", 900);
 
-        setState(
-          "Normal Mode",
-          "Back to normal. What's up?"
-        );
+          setState(
+            "Study Mode",
+            "Study mode activated. What are we learning?"
+          );
 
-        speak(
-          "Back to normal. What's up?"
-        );
+          speak(
+            "Study mode activated. What are we learning?"
+          );
+
+        } else {
+
+          expression("happy", 700);
+
+          setState(
+            "Normal Mode",
+            "Back to normal. What's up?"
+          );
+
+          speak(
+            "Back to normal. What's up?"
+          );
+
+        }
 
       }
+    );
 
-    }
-  );
+  }
 
 
-  settingsBubble.addEventListener(
-    "click",
-    event => {
+  if (settingsBubble) {
 
-      event.stopPropagation();
+    settingsBubble.addEventListener(
+      "click",
+      event => {
 
-      closeMenu();
+        event.stopPropagation();
 
-      openSettings();
+        closeMenu();
 
-    }
-  );
+        openSettings();
+
+      }
+    );
+
+  }
 
 }
 
 
 /* =========================================================
    SETTINGS
-========================================================= */
+   ========================================================= */
 
 function openSettings() {
-
-  if (!settingsPanel) {
-    return;
-  }
 
   const saved =
     localStorage.getItem(
       "dabsy_gemini_key"
     ) || "";
 
-  apiKeyInput.value =
-    saved;
+  if (apiKeyInput) {
+    apiKeyInput.value = saved;
+  }
 
-  keyStatus.textContent =
-    saved
-      ? "Gemini key saved on this device."
-      : "No Gemini key connected.";
+  if (keyStatus) {
 
-  settingsPanel.classList.add(
-    "open"
-  );
+    keyStatus.textContent =
+      saved
+        ? "Gemini key saved on this device."
+        : "No Gemini key connected.";
+
+  }
+
+  settingsPanel.classList.add("open");
 
 }
 
 
 function closeSettingsPanel() {
 
-  settingsPanel.classList.remove(
-    "open"
-  );
+  settingsPanel.classList.remove("open");
 
 }
 
 
 function setupSettings() {
 
-  if (!settingsPanel) {
-    return;
+  if (closeSettings) {
+
+    closeSettings.addEventListener(
+      "click",
+      closeSettingsPanel
+    );
+
   }
 
-  closeSettings.addEventListener(
-    "click",
-    closeSettingsPanel
-  );
 
+  if (settingsPanel) {
 
-  settingsPanel.addEventListener(
-    "click",
-    event => {
+    settingsPanel.addEventListener(
+      "click",
+      event => {
 
-      if (
-        event.target ===
-        settingsPanel
-      ) {
-
-        closeSettingsPanel();
+        if (
+          event.target === settingsPanel
+        ) {
+          closeSettingsPanel();
+        }
 
       }
+    );
 
-    }
-  );
+  }
 
 
-  saveKey.addEventListener(
-    "click",
-    () => {
+  if (saveKey) {
 
-      const key =
-        apiKeyInput.value.trim();
+    saveKey.addEventListener(
+      "click",
+      () => {
 
-      if (!key) {
+        const key =
+          apiKeyInput.value.trim();
+
+        if (!key) {
+
+          keyStatus.textContent =
+            "Please enter your Gemini API key.";
+
+          return;
+
+        }
+
+        localStorage.setItem(
+          "dabsy_gemini_key",
+          key
+        );
 
         keyStatus.textContent =
-          "Please enter your Gemini API key.";
+          "Gemini connected ✓";
 
-        return;
+        expression("happy", 1000);
 
-      }
-
-
-      localStorage.setItem(
-        "dabsy_gemini_key",
-        key
-      );
-
-
-      keyStatus.textContent =
-        "Gemini connected ✓";
-
-
-      expression(
-        "happy"
-      );
-
-
-      setTimeout(
-        () => {
+        setTimeout(() => {
 
           closeSettingsPanel();
 
           setState(
             "Gemini Online",
-            "My brain is online."
+            "My brain is online. 💙"
           );
 
           speak(
             "My brain is online."
           );
 
-        },
-        500
-      );
+        }, 500);
 
-    }
-  );
+      }
+    );
+
+  }
 
 }
 
 
 /* =========================================================
    SPEECH RECOGNITION
-========================================================= */
+   ========================================================= */
 
 function setupSpeech() {
 
@@ -590,152 +624,133 @@ function setupSpeech() {
   recognition =
     new SpeechRecognition();
 
+  recognition.lang = "en-IN";
 
-  recognition.lang =
-    "en-IN";
+  recognition.continuous = false;
 
-  recognition.continuous =
-    false;
+  recognition.interimResults = false;
 
-  recognition.interimResults =
-    false;
-
-  recognition.maxAlternatives =
-    1;
+  recognition.maxAlternatives = 1;
 
 
-  recognition.onstart =
-    () => {
+  recognition.onstart = () => {
 
-      listening = true;
+    listening = true;
 
-      world.classList.add(
-        "listening"
+    world.classList.remove(
+      "thinking",
+      "speaking"
+    );
+
+    world.classList.add(
+      "listening"
+    );
+
+    expression("curious", 0);
+
+    setState(
+      "Listening",
+      "I'm listening... 👂"
+    );
+
+  };
+
+
+  recognition.onresult = event => {
+
+    const transcript =
+      event.results?.[0]?.[0]?.transcript || "";
+
+    const text =
+      transcript.trim();
+
+
+    if (!text) {
+
+      setState(
+        "Didn't catch that",
+        "Try again."
       );
 
-      clearExpressions();
+      expression("confused", 800);
+
+      return;
+
+    }
+
+
+    askDABSy(text);
+
+  };
+
+
+  recognition.onerror = event => {
+
+    listening = false;
+
+    world.classList.remove(
+      "listening"
+    );
+
+
+    if (
+      event.error === "not-allowed"
+    ) {
+
+      expression("sad", 900);
+
+      setState(
+        "Microphone",
+        "Microphone permission is blocked."
+      );
+
+    } else if (
+      event.error === "no-speech"
+    ) {
+
+      expression("confused", 700);
 
       setState(
         "Listening",
-        "I'm listening..."
+        "I didn't hear anything."
       );
 
-    };
+    } else {
 
+      expression("confused", 800);
 
-  recognition.onresult =
-    event => {
-
-      const transcript =
-        event.results?.[0]?.[0]?.transcript || "";
-
-      const text =
-        transcript.trim();
-
-
-      if (!text) {
-
-        expression(
-          "confused"
-        );
-
-        setState(
-          "Didn't catch that",
-          "Try again."
-        );
-
-        return;
-
-      }
-
-
-      askDABSy(text);
-
-    };
-
-
-  recognition.onerror =
-    event => {
-
-      listening = false;
-
-      world.classList.remove(
-        "listening"
+      setState(
+        "Microphone",
+        "I couldn't hear that. Try again."
       );
 
+    }
 
-      if (
-        event.error ===
-        "not-allowed"
-      ) {
-
-        expression(
-          "sad"
-        );
-
-        setState(
-          "Microphone",
-          "Microphone permission is blocked."
-        );
-
-      } else if (
-        event.error ===
-        "no-speech"
-      ) {
-
-        expression(
-          "curious"
-        );
-
-        setState(
-          "Listening",
-          "I didn't hear anything."
-        );
-
-      } else {
-
-        expression(
-          "confused"
-        );
-
-        setState(
-          "Microphone",
-          "I couldn't hear that. Try again."
-        );
-
-      }
-
-    };
+  };
 
 
-  recognition.onend =
-    () => {
+  recognition.onend = () => {
 
-      listening = false;
+    listening = false;
 
-      world.classList.remove(
-        "listening"
-      );
+    world.classList.remove(
+      "listening"
+    );
 
-    };
+  };
 
 }
 
 
 /* =========================================================
-   LISTEN
-========================================================= */
+   START LISTENING
+   ========================================================= */
 
 function startListening() {
 
   closeMenu();
 
-
   if (!recognition) {
-
-    expression(
-      "sad"
-    );
 
     setState(
       "Voice unavailable",
@@ -774,7 +789,7 @@ function startListening() {
 
 /* =========================================================
    GEMINI
-========================================================= */
+   ========================================================= */
 
 async function askDABSy(userText) {
 
@@ -786,9 +801,7 @@ async function askDABSy(userText) {
 
   if (!apiKey) {
 
-    expression(
-      "curious"
-    );
+    expression("confused", 900);
 
     setState(
       "Gemini Offline",
@@ -806,67 +819,96 @@ async function askDABSy(userText) {
 
   thinking = true;
 
+  world.classList.remove(
+    "listening",
+    "speaking"
+  );
+
   world.classList.add(
     "thinking"
   );
 
-  clearExpressions();
-
-  expression(
-    "curious",
-    1600
-  );
+  expression("curious", 0);
 
 
   setState(
     studyMode
       ? "Study Mode"
       : "Thinking",
-    "Let me think..."
+    "Let me think... 🧠"
   );
 
 
-  const systemPrompt =
-    studyMode
+  const systemPrompt = studyMode
 
-      ? `
-You are D.A.B.S.y, a friendly AI desk study companion.
+    ? `
+You are D.A.B.S.y, a friendly AI desk and study companion.
 
 The user is a Class 11 Science student in India.
 
-You are in STUDY MODE.
+You are currently in STUDY MODE.
 
-Explain things clearly and simply.
-Break difficult problems into logical steps.
-Teach reasoning instead of only giving the final answer.
-Use examples when useful.
-For mathematics and science, show important working.
-Use headings and numbered steps for longer answers.
-Keep spoken answers reasonably concise.
+Your job is to teach, not merely dump answers.
+
+Explain difficult ideas clearly.
+Break problems into logical steps.
+Show important mathematical or scientific working.
+Use simple examples.
+Point out common mistakes when useful.
+Make explanations understandable without becoming childish.
+
+Format longer answers with:
+- a short title
+- small sections
+- numbered steps where useful
+- short paragraphs
+- equations on separate lines when appropriate
+
+Avoid giant walls of text.
+
+Keep the first spoken explanation reasonably concise because D.A.B.S.y will read it aloud.
+
 Never say "As an AI".
-Sound natural, friendly and slightly playful.
+
+Sound intelligent, natural, friendly and slightly playful.
+
+Do not use excessive emojis.
 `
 
-      : `
+    : `
+
 You are D.A.B.S.y, a friendly AI desk companion.
 
 Be intelligent, warm, playful and natural.
-Keep ordinary conversation concise.
-You may use light humor.
-Help with studying, planning, ideas and questions.
+
+Keep ordinary conversation reasonably concise.
+
+Help with studying, planning, ideas, questions and everyday tasks.
+
+You have a subtle personality.
+You can occasionally be curious, witty or playful.
+
 Never say "As an AI".
+
+Do not overuse emojis.
+
 You are a desk companion, not a formal chatbot.
 `;
 
 
   try {
 
+    /*
+      Keep this endpoint exactly as your existing
+      working Gemini setup unless we deliberately
+      change the model later.
+    */
+
     const response =
       await fetch(
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
         {
-          method:
-            "POST",
+          method: "POST",
 
           headers: {
             "Content-Type":
@@ -876,43 +918,47 @@ You are a desk companion, not a formal chatbot.
               apiKey
           },
 
-          body:
-            JSON.stringify({
+          body: JSON.stringify({
 
-              systemInstruction: {
+            systemInstruction: {
+
+              parts: [
+                {
+                  text:
+                    systemPrompt
+                }
+              ]
+
+            },
+
+            contents: [
+
+              {
+                role: "user",
+
                 parts: [
                   {
                     text:
-                      systemPrompt
+                      userText
                   }
                 ]
-              },
-
-              contents: [
-                {
-                  role:
-                    "user",
-
-                  parts: [
-                    {
-                      text:
-                        userText
-                    }
-                  ]
-                }
-              ],
-
-              generationConfig: {
-
-                temperature:
-                  0.8,
-
-                maxOutputTokens:
-                  900
 
               }
 
-            })
+            ],
+
+            generationConfig: {
+
+              temperature: 0.8,
+
+              maxOutputTokens:
+                studyMode
+                  ? 1200
+                  : 700
+
+            }
+
+          })
 
         }
       );
@@ -933,7 +979,9 @@ You are a desk companion, not a formal chatbot.
 
 
     const answer =
-      data?.candidates?.[0]?.content?.parts
+      data
+        ?.candidates?.[0]
+        ?.content?.parts
         ?.map(
           part =>
             part.text || ""
@@ -959,12 +1007,13 @@ You are a desk companion, not a formal chatbot.
 
 
     /*
-       Determine answer type.
+      Long study answers go into the
+      dedicated presentation area.
     */
 
     const complex =
       studyMode &&
-      answer.length > 450;
+      answer.length > 420;
 
 
     if (complex) {
@@ -979,52 +1028,44 @@ You are a desk companion, not a formal chatbot.
         "complex-answer"
       );
 
+      /*
+        Keep the bottom subtitle short.
+        This prevents the study answer and
+        subtitle from fighting for the same space.
+      */
+
+      setState(
+        "Study Mode",
+        makeSpokenPreview(answer)
+      );
+
     } else {
 
       document.body.classList.remove(
         "complex-answer"
       );
 
-    }
-
-
-    /*
-       Pick an expression based
-       on the type of answer.
-    */
-
-    if (studyMode) {
-
-      expression(
-        "curious",
-        1400
-      );
-
-    } else {
-
-      expression(
-        "happy",
-        1000
+      setState(
+        studyMode
+          ? "Study Mode"
+          : "DABSy",
+        answer
       );
 
     }
 
 
-    setState(
-      studyMode
-        ? "Study Mode"
-        : "DABSy",
-      answer
-    );
-
+    chooseResponseExpression(userText);
 
     speak(
-      answer
+      complex
+        ? makeSpokenPreview(answer)
+        : answer
     );
-
 
     randomHand();
 
+    maybeEasterEgg();
 
   } catch (error) {
 
@@ -1045,10 +1086,7 @@ You are a desk companion, not a formal chatbot.
     );
 
 
-    expression(
-      "sad"
-    );
-
+    expression("confused", 900);
 
     setState(
       "Gemini Error",
@@ -1061,8 +1099,120 @@ You are a desk companion, not a formal chatbot.
 
 
 /* =========================================================
+   SPOKEN PREVIEW
+   =========================================================
+
+   Long study answers stay visually in the study
+   presentation area, while D.A.B.S.y speaks a
+   shorter version.
+   ========================================================= */
+
+function makeSpokenPreview(text) {
+
+  const clean =
+    String(text)
+      .replace(/\n+/g, " ")
+      .replace(/[*_#`]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+
+  if (clean.length <= 300) {
+    return clean;
+  }
+
+
+  return (
+    clean.slice(0, 300)
+      .replace(/\s+\S*$/, "") +
+    "... I've put the full explanation above."
+  );
+
+}
+
+
+/* =========================================================
+   RESPONSE EXPRESSION
+   ========================================================= */
+
+function chooseResponseExpression(text) {
+
+  const lower =
+    String(text).toLowerCase();
+
+
+  if (
+    lower.includes("why") ||
+    lower.includes("how")
+  ) {
+
+    expression(
+      "curious",
+      1200
+    );
+
+    return;
+
+  }
+
+
+  if (
+    lower.includes("thank") ||
+    lower.includes("good") ||
+    lower.includes("nice")
+  ) {
+
+    expression(
+      "happy",
+      1200
+    );
+
+    return;
+
+  }
+
+
+  if (
+    lower.includes("confused") ||
+    lower.includes("don't understand") ||
+    lower.includes("stuck")
+  ) {
+
+    expression(
+      "confused",
+      1200
+    );
+
+    return;
+
+  }
+
+
+  if (studyMode) {
+
+    expression(
+      "curious",
+      900
+    );
+
+    return;
+
+  }
+
+
+  expression(
+    Math.random() > .5
+      ? "happy"
+      : "curious",
+    900
+  );
+
+}
+
+
+/* =========================================================
    ERROR HANDLING
-========================================================= */
+   ========================================================= */
 
 function friendlyError(error) {
 
@@ -1077,7 +1227,7 @@ function friendlyError(error) {
       "API_KEY_INVALID"
     ) ||
     message.toLowerCase()
-      .includes("invalid")
+      .includes("api key not valid")
   ) {
 
     return "Your Gemini key looks invalid.";
@@ -1126,346 +1276,4 @@ function friendlyError(error) {
 }
 
 
-/* =========================================================
-   VOICE
-========================================================= */
-
-function loadVoices() {
-
-  if (
-    "speechSynthesis" in window
-  ) {
-
-    voices =
-      speechSynthesis.getVoices();
-
-  }
-
-}
-
-
-if (
-  "speechSynthesis" in window
-) {
-
-  loadVoices();
-
-  speechSynthesis.onvoiceschanged =
-    loadVoices;
-
-}
-
-
-function chooseVoice() {
-
-  if (!voices.length) {
-    return null;
-  }
-
-
-  /*
-     Prefer Indian English,
-     then British / US English.
-  */
-
-  return (
-
-    voices.find(
-      voice =>
-        /en-IN/i.test(
-          voice.lang
-        )
-    ) ||
-
-    voices.find(
-      voice =>
-        /en-GB/i.test(
-          voice.lang
-        )
-    ) ||
-
-    voices.find(
-      voice =>
-        /en-US/i.test(
-          voice.lang
-        )
-    ) ||
-
-    voices.find(
-      voice =>
-        /^en/i.test(
-          voice.lang
-        )
-    ) ||
-
-    null
-
-  );
-
-}
-
-
-function speak(text) {
-
-  if (
-    !("speechSynthesis" in window)
-  ) {
-
-    return;
-
-  }
-
-
-  speechSynthesis.cancel();
-
-
-  const clean =
-    String(text)
-      .replace(
-        /[*_#`]/g,
-        ""
-      )
-      .replace(
-        /\n+/g,
-        ". "
-      )
-      .trim();
-
-
-  if (!clean) {
-    return;
-  }
-
-
-  const voice =
-    chooseVoice();
-
-
-  const utterance =
-    new SpeechSynthesisUtterance(
-      clean
-    );
-
-
-  if (voice) {
-
-    utterance.voice =
-      voice;
-
-    utterance.lang =
-      voice.lang;
-
-  } else {
-
-    utterance.lang =
-      "en-IN";
-
-  }
-
-
-  utterance.rate =
-    0.98;
-
-  utterance.pitch =
-    1.12;
-
-
-  utterance.onstart =
-    () => {
-
-      speaking = true;
-
-      world.classList.add(
-        "speaking"
-      );
-
-    };
-
-
-  utterance.onend =
-    () => {
-
-      speaking = false;
-
-      world.classList.remove(
-        "speaking"
-      );
-
-    };
-
-
-  utterance.onerror =
-    () => {
-
-      speaking = false;
-
-      world.classList.remove(
-        "speaking"
-      );
-
-    };
-
-
-  speechSynthesis.speak(
-    utterance
-  );
-
-}
-
-
-/* =========================================================
-   RANDOM HANDS
-========================================================= */
-
-function randomHand() {
-
-  if (
-    Math.random() > .30
-  ) {
-
-    return;
-
-  }
-
-
-  const hand =
-    Math.random() > .5
-      ? leftHand
-      : rightHand;
-
-
-  hand.classList.add(
-    "visible"
-  );
-
-
-  setTimeout(
-    () => {
-
-      hand.classList.remove(
-        "visible"
-      );
-
-    },
-    1100
-  );
-
-}
-
-
-/* =========================================================
-   BLINKING
-========================================================= */
-
-function setupBlinking() {
-
-  setInterval(
-    () => {
-
-      if (
-        listening ||
-        thinking ||
-        speaking
-      ) {
-
-        return;
-
-      }
-
-
-      face.classList.add(
-        "blink"
-      );
-
-
-      setTimeout(
-        () => {
-
-          face.classList.remove(
-            "blink"
-          );
-
-        },
-        150
-      );
-
-    },
-    3500
-  );
-
-}
-
-
-/* =========================================================
-   IDLE EYES
-========================================================= */
-
-function setupEyeMovement() {
-
-  setInterval(
-    () => {
-
-      if (
-        listening ||
-        thinking ||
-        speaking
-      ) {
-
-        return;
-
-      }
-
-
-      const direction =
-        Math.random() > .5
-          ? "look-left"
-          : "look-right";
-
-
-      face.classList.add(
-        direction
-      );
-
-
-      setTimeout(
-        () => {
-
-          face.classList.remove(
-            direction
-          );
-
-        },
-        700
-      );
-
-    },
-    5500
-  );
-
-}
-
-
-/* =========================================================
-   RANDOM IDLE PERSONALITY
-========================================================= */
-
-function setupIdlePersonality() {
-
-  setInterval(
-    () => {
-
-      if (
-        listening ||
-        thinking ||
-        speaking ||
-        menuOpen
-      ) {
-
-        return;
-
-      }
-
-
-      /*
-         Very rare idle expression.
-        
+/* ======================================================
