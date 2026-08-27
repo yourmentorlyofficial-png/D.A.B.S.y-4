@@ -1,4 +1,4 @@
-const CACHE_NAME = "dabsy-v4-final";
+const CACHE_NAME = "dabsy-v5";
 
 const APP_FILES = [
   "./",
@@ -6,19 +6,24 @@ const APP_FILES = [
   "./styles.css",
   "./app.js",
   "./manifest.json",
-  "./icon.png"
+  "./icon-512×512.png"
 ];
+
 
 /* =========================
    INSTALL
 ========================= */
 
 self.addEventListener("install", event => {
+
   event.waitUntil(
+
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(APP_FILES))
       .then(() => self.skipWaiting())
+
   );
+
 });
 
 
@@ -27,17 +32,25 @@ self.addEventListener("install", event => {
 ========================= */
 
 self.addEventListener("activate", event => {
+
   event.waitUntil(
+
     caches.keys()
-      .then(keys =>
-        Promise.all(
+      .then(keys => {
+
+        return Promise.all(
+
           keys
             .filter(key => key !== CACHE_NAME)
             .map(key => caches.delete(key))
-        )
-      )
+
+        );
+
+      })
       .then(() => self.clients.claim())
+
   );
+
 });
 
 
@@ -49,7 +62,10 @@ self.addEventListener("fetch", event => {
 
   const request = event.request;
 
-  /* Never interfere with Gemini */
+  /*
+    Never interfere with Gemini/API requests.
+  */
+
   if (
     request.url.includes(
       "generativelanguage.googleapis.com"
@@ -58,15 +74,25 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  /* Only handle GET requests */
+
+  /*
+    Only handle GET requests.
+  */
+
   if (request.method !== "GET") {
     return;
   }
+
 
   event.respondWith(
 
     fetch(request)
       .then(response => {
+
+        /*
+          Save successful same-origin
+          files into the cache.
+        */
 
         if (
           response &&
@@ -86,8 +112,11 @@ self.addEventListener("fetch", event => {
         return response;
 
       })
-
       .catch(() => {
+
+        /*
+          Offline fallback.
+        */
 
         return caches.match(request)
           .then(cached => {
