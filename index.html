@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <title>D.A.B.S.y</title>
+  <meta name="description" content="D.A.B.S.y - AI desk and study companion">
   <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="./icon.png">
+  <link rel="icon" href="./icon.png" type="image/png">
   <link rel="stylesheet" href="./styles.css">
+  <title>D.A.B.S.y</title>
 </head>
 
 <body>
@@ -32,6 +33,26 @@
 
     </div>
 
+    <div id="hands">
+      <div id="leftHand" class="hand">
+        <span></span>
+      </div>
+
+      <div id="rightHand" class="hand">
+        <span></span>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="contentArea">
+
+    <div id="contentTitle"></div>
+
+    <div id="contentText"></div>
+
+    <div id="visualArea"></div>
+
   </section>
 
   <section id="conversation">
@@ -39,16 +60,65 @@
     <div id="status">DABSy</div>
 
     <div id="speech">
-      Hello! I'm DABSy.
+      Hello! I'm DABSy. 💙
     </div>
 
   </section>
 
+  <div id="studyBadge">
+    📚 STUDY MODE
+  </div>
+
+  <div id="bubbleMenu" aria-hidden="true">
+
+    <button id="studyBubble" class="bubble">
+      <span>📚</span>
+      <small>Study</small>
+    </button>
+
+    <button id="settingsBubble" class="bubble">
+      <span>⚙️</span>
+      <small>Settings</small>
+    </button>
+
+  </div>
+
   <div id="hint">
-    Tap and hold DABSy
+    Tap & hold to talk
   </div>
 
 </main>
+
+<section id="settingsPanel">
+
+  <div class="settingsCard">
+
+    <button id="closeSettings" class="closeButton">
+      ×
+    </button>
+
+    <h2>D.A.B.S.y</h2>
+
+    <p>
+      Connect Gemini to give D.A.B.S.y its brain.
+    </p>
+
+    <input
+      id="apiKeyInput"
+      type="password"
+      placeholder="Gemini API key"
+      autocomplete="off"
+    >
+
+    <div id="keyStatus"></div>
+
+    <button id="saveKey" class="primaryButton">
+      Connect Gemini
+    </button>
+
+  </div>
+
+</section>
 
 <script src="./app.js"></script>
 
