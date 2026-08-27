@@ -1,14 +1,3 @@
-/* =========================================================
-   D.A.B.S.y
-   PREMIUM VISUAL SYSTEM
-   Change 1: Expression Engine
-========================================================= */
-
-
-/* =========================================================
-   GLOBAL
-========================================================= */
-
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -19,10 +8,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 0;
-
   overflow: hidden;
-
   background: #000;
   color: #fff;
 
@@ -38,9 +24,7 @@ body {
 body {
   touch-action: manipulation;
   user-select: none;
-  -webkit-user-select: none;
 }
-
 
 /* =========================================================
    WORLD
@@ -59,16 +43,19 @@ body {
   align-items: center;
   justify-content: center;
 
-  background: #000;
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(25, 55, 95, 0.035),
+      transparent 42%
+    ),
+    #000;
 
   transition:
-    background 0.8s ease;
+    background 1s ease;
 }
 
-
-/* =========================================================
-   BACKGROUND GLOW
-========================================================= */
+/* Ambient glow */
 
 #backgroundGlow {
   position: absolute;
@@ -76,35 +63,48 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 65vw;
-  height: 45vw;
+  width: 70vw;
+  height: 55vw;
 
-  max-width: 700px;
-  max-height: 450px;
+  max-width: 800px;
+  max-height: 550px;
 
-  transform:
-    translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 
   border-radius: 50%;
 
   background:
     radial-gradient(
       ellipse,
-      rgba(50, 130, 255, 0.045),
-      transparent 70%
+      rgba(45, 130, 255, 0.07),
+      rgba(20, 90, 190, 0.025) 40%,
+      transparent 72%
     );
 
-  filter: blur(55px);
+  filter: blur(60px);
 
   pointer-events: none;
 
-  opacity: .9;
-
-  transition:
-    opacity .8s ease,
-    transform 1s ease;
+  animation:
+    ambientBreathing 6s ease-in-out infinite;
 }
 
+@keyframes ambientBreathing {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform:
+      translate(-50%, -50%)
+      scale(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1.04);
+  }
+}
 
 /* =========================================================
    CHARACTER
@@ -125,13 +125,28 @@ body {
   z-index: 5;
 
   transition:
-    width .8s cubic-bezier(.2,.8,.2,1),
-    height .8s cubic-bezier(.2,.8,.2,1),
-    left .8s cubic-bezier(.2,.8,.2,1),
-    top .8s cubic-bezier(.2,.8,.2,1),
-    transform .8s cubic-bezier(.2,.8,.2,1);
+    width 0.8s cubic-bezier(.16,1,.3,1),
+    height 0.8s cubic-bezier(.16,1,.3,1),
+    left 0.8s cubic-bezier(.16,1,.3,1),
+    top 0.8s cubic-bezier(.16,1,.3,1),
+    transform 0.8s cubic-bezier(.16,1,.3,1);
 }
 
+/* tiny idle movement */
+
+#character::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 1px;
+  height: 1px;
+
+  pointer-events: none;
+}
 
 /* =========================================================
    FACE GLOW
@@ -143,8 +158,8 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 65%;
-  height: 50%;
+  width: 70%;
+  height: 55%;
 
   transform:
     translate(-50%, -50%);
@@ -154,22 +169,20 @@ body {
   background:
     radial-gradient(
       ellipse,
-      rgba(45, 130, 255, .10),
-      transparent 70%
+      rgba(45, 130, 255, 0.12),
+      rgba(30, 100, 210, 0.035) 48%,
+      transparent 72%
     );
 
-  filter: blur(45px);
+  filter: blur(42px);
 
-  opacity: .9;
-
-  pointer-events: none;
+  opacity: 0.8;
 
   transition:
-    opacity .6s ease,
-    transform .6s ease,
-    filter .6s ease;
+    transform 0.7s ease,
+    opacity 0.7s ease,
+    filter 0.7s ease;
 }
-
 
 /* =========================================================
    FACE
@@ -192,10 +205,9 @@ body {
   gap: clamp(35px, 9vw, 90px);
 
   transition:
-    transform .45s cubic-bezier(.2,.8,.2,1),
-    gap .45s ease;
+    transform 0.45s cubic-bezier(.16,1,.3,1),
+    gap 0.45s ease;
 }
-
 
 /* =========================================================
    EYES
@@ -207,42 +219,15 @@ body {
   width: clamp(82px, 19vw, 155px);
   height: clamp(110px, 27vw, 195px);
 
-  flex-shrink: 0;
-
-  overflow: hidden;
-
-  transform-origin: center;
-
-  transition:
-    width .38s cubic-bezier(.2,.8,.2,1),
-    height .38s cubic-bezier(.2,.8,.2,1),
-    transform .42s cubic-bezier(.2,.8,.2,1),
-    border-radius .42s ease,
-    filter .42s ease;
-}
-
-
-/*
-   The actual visible eye.
-
-   Keeping this as a separate element means
-   expressions can morph the eye without
-   breaking highlights/glow.
-*/
-
-.eyeShape {
-  position: absolute;
-
-  inset: 0;
-
-  border-radius: 38%;
+  border-radius:
+    38%;
 
   background:
     linear-gradient(
       145deg,
-      #fff,
-      #dcecff 55%,
-      #b8d8ff
+      #ffffff 0%,
+      #edf6ff 48%,
+      #b8d8ff 100%
     );
 
   box-shadow:
@@ -250,17 +235,49 @@ body {
     0 0 35px rgba(50,145,255,.35),
     0 0 80px rgba(30,110,255,.15);
 
+  overflow: hidden;
+
+  transform-origin: center;
+
   transition:
-    border-radius .42s cubic-bezier(.2,.8,.2,1),
-    clip-path .42s cubic-bezier(.2,.8,.2,1),
-    transform .42s cubic-bezier(.2,.8,.2,1),
-    opacity .35s ease;
+    width .35s cubic-bezier(.16,1,.3,1),
+    height .35s cubic-bezier(.16,1,.3,1),
+    border-radius .35s cubic-bezier(.16,1,.3,1),
+    transform .35s cubic-bezier(.16,1,.3,1),
+    filter .35s ease,
+    box-shadow .35s ease;
 }
 
+/* subtle inner shine */
 
-/* =========================================================
-   EYE HIGHLIGHT
-========================================================= */
+.eye::after {
+  content: "";
+
+  position: absolute;
+
+  left: -30%;
+  top: -20%;
+
+  width: 160%;
+  height: 50%;
+
+  background:
+    linear-gradient(
+      100deg,
+      transparent,
+      rgba(255,255,255,.18),
+      transparent
+    );
+
+  transform:
+    rotate(-8deg);
+
+  opacity: .35;
+
+  pointer-events: none;
+}
+
+/* Eye highlight */
 
 .eyeHighlight {
   position: absolute;
@@ -274,76 +291,22 @@ body {
   border-radius: 50%;
 
   background:
-    rgba(255,255,255,.88);
+    rgba(255,255,255,.9);
 
   filter: blur(1px);
 
   transition:
-    left .35s ease,
-    top .35s ease,
-    opacity .3s ease,
-    transform .35s ease;
+    transform .3s ease;
 }
-
 
 /* =========================================================
-   SECONDARY EYE GLOW
+   NATURAL EXPRESSIONS
 ========================================================= */
 
-.eyeGlow {
-  position: absolute;
-
-  inset: -15%;
-
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(255,255,255,.10),
-      transparent 62%
-    );
-
-  pointer-events: none;
-
-  opacity: .8;
-
-  transition:
-    opacity .4s ease,
-    transform .4s ease;
-}
-
-
-/* =========================================================
-   DEFAULT / IDLE
-========================================================= */
-
-/*
-   This is D.A.B.S.y's normal face.
-
-   IMPORTANT:
-   No smile.
-   No permanent curves.
-   No weird expression.
-
-   Just the clean signature eyes.
-*/
-
-.expression-idle .eyeShape {
-  border-radius: 38%;
-}
-
-.expression-idle .eye {
-  transform: translateY(0);
-}
-
-
-/* =========================================================
-   BLINK
-========================================================= */
+/* Blink */
 
 .blink .eye {
-  height: 13px;
+  height: 12px;
 
   border-radius: 50%;
 
@@ -351,281 +314,165 @@ body {
     scaleY(.65);
 }
 
-.blink .eyeShape {
-  border-radius: 50%;
+/* Look */
+
+.look-left .eye {
+  transform:
+    translateX(-13px);
 }
 
-.blink .eyeHighlight,
-.blink .eyeGlow {
-  opacity: 0;
+.look-right .eye {
+  transform:
+    translateX(13px);
 }
 
-
-/* =========================================================
-   HAPPY
-========================================================= */
-
-/*
-   VERY subtle joy.
-
-   The lower part curves upward.
-   It only appears when JS chooses
-   the happy state.
+/* Happy
+   Bottom curve, used briefly rather than constantly.
 */
 
-.expression-happy .eyeShape {
+.happy .eye {
+  height: clamp(78px, 19vw, 132px);
+
   border-radius:
-    48% 48% 62% 62%;
+    45% 45% 65% 65%;
 
-  clip-path:
-    polygon(
-      0 0,
-      100% 0,
-      100% 57%,
-      96% 67%,
-      88% 76%,
-      76% 84%,
-      62% 90%,
-      50% 93%,
-      38% 90%,
-      24% 84%,
-      12% 76%,
-      4% 67%,
-      0 57%
-    );
-}
-
-.expression-happy .eye {
   transform:
-    translateY(-2px)
-    scale(.98);
+    translateY(4px);
 }
 
-.expression-happy #faceGlow {
+/* Sad
+   Top-heavy expression.
+*/
+
+.sad .eye {
+  border-radius:
+    65% 65% 38% 38%;
+
+  transform:
+    translateY(3px)
+    rotate(0deg);
+}
+
+.sad .left-eye {
+  transform:
+    rotate(4deg);
+}
+
+.sad .right-eye {
+  transform:
+    rotate(-4deg);
+}
+
+/* Curious */
+
+.curious .left-eye {
+  transform:
+    rotate(-4deg)
+    translateY(2px);
+}
+
+.curious .right-eye {
+  transform:
+    rotate(4deg)
+    translateY(-3px);
+}
+
+/* Confused */
+
+.confused .left-eye {
+  transform:
+    rotate(-7deg);
+}
+
+.confused .right-eye {
+  transform:
+    rotate(7deg);
+}
+
+/* Surprised */
+
+.surprised .eye {
+  transform:
+    scale(1.08);
+
+  border-radius:
+    42%;
+}
+
+/* Sleepy */
+
+.sleepy .eye {
+  height: clamp(55px, 14vw, 90px);
+
+  border-radius:
+    50%;
+}
+
+/* =========================================================
+   CHARACTER STATES
+========================================================= */
+
+.listening #dabsyFace {
+  animation:
+    listeningPulse 1.2s ease-in-out infinite;
+}
+
+.listening #faceGlow {
   opacity: 1;
+
   transform:
     translate(-50%, -50%)
     scale(1.08);
 }
 
-
-/* =========================================================
-   SAD
-========================================================= */
-
-/*
-   Gentle droop.
-   Nothing exaggerated.
-*/
-
-.expression-sad .left-eye {
-  transform:
-    rotate(4deg)
-    translateY(4px);
-}
-
-.expression-sad .right-eye {
-  transform:
-    rotate(-4deg)
-    translateY(4px);
-}
-
-.expression-sad .eyeShape {
-  border-radius:
-    58% 58% 34% 34%;
-}
-
-.expression-sad .eyeHighlight {
-  top: 18%;
-  opacity: .7;
-}
-
-
-/* =========================================================
-   CURIOUS
-========================================================= */
-
-.expression-curious .left-eye {
-  transform:
-    rotate(-5deg)
-    translateY(-4px);
-}
-
-.expression-curious .right-eye {
-  transform:
-    rotate(3deg)
-    translateY(2px);
-}
-
-.expression-curious .eyeShape {
-  border-radius:
-    42% 42% 36% 36%;
-}
-
-
-/* =========================================================
-   CONFUSED
-========================================================= */
-
-.expression-confused .left-eye {
-  transform:
-    rotate(-7deg)
-    translateY(4px);
-}
-
-.expression-confused .right-eye {
-  transform:
-    rotate(7deg)
-    translateY(-3px);
-}
-
-.expression-confused .left-eye .eyeHighlight {
-  transform:
-    translateY(4px);
-}
-
-.expression-confused .right-eye .eyeHighlight {
-  transform:
-    translateY(-2px);
-}
-
-
-/* =========================================================
-   SURPRISED
-========================================================= */
-
-.expression-surprised .eye {
-  transform:
-    scale(1.08);
-}
-
-.expression-surprised .eyeShape {
-  border-radius:
-    44%;
-}
-
-.expression-surprised .eyeHighlight {
-  transform:
-    scale(1.08);
-}
-
-
-/* =========================================================
-   SLEEPY
-========================================================= */
-
-.expression-sleepy .eye {
-  height:
-    clamp(55px, 14vw, 90px);
-
-  transform:
-    translateY(18px);
-}
-
-.expression-sleepy .eyeShape {
-  border-radius:
-    50%;
-}
-
-.expression-sleepy .eyeHighlight {
-  opacity: .45;
-}
-
-
-/* =========================================================
-   THINKING
-========================================================= */
-
-.expression-thinking .left-eye {
-  transform:
-    translateX(-5px)
-    rotate(-2deg);
-}
-
-.expression-thinking .right-eye {
-  transform:
-    translateX(5px)
-    rotate(2deg);
-}
-
-.expression-thinking .eyeHighlight {
-  transform:
-    translateX(7px);
-}
-
-
-/* =========================================================
-   LISTENING
-========================================================= */
-
-.expression-listening .eye {
-  transform:
-    scale(1.015);
-}
-
-.expression-listening .eyeShape {
-  border-radius:
-    40%;
-}
-
-.expression-listening .eyeGlow {
-  opacity: 1.15;
-}
-
-
-/* =========================================================
-   SPEAKING
-========================================================= */
-
-.expression-speaking .eye {
+.thinking #dabsyFace {
   animation:
-    eyeSpeaking .72s ease-in-out infinite;
+    thinkingFloat 1.7s ease-in-out infinite;
 }
 
-@keyframes eyeSpeaking {
+.thinking #faceGlow {
+  animation:
+    thinkingGlow 1.7s ease-in-out infinite;
+}
 
+.speaking #dabsyFace {
+  animation:
+    speakingPulse .75s ease-in-out infinite;
+}
+
+.speaking #faceGlow {
+  opacity: 1;
+}
+
+@keyframes listeningPulse {
   0%,
   100% {
     transform:
-      translateY(0)
+      translate(-50%, -50%)
       scale(1);
   }
 
   50% {
     transform:
-      translateY(-2px)
-      scale(1.018);
+      translate(-50%, -50%)
+      scale(1.035);
+  }
+}
+
+@keyframes thinkingFloat {
+  0%,
+  100% {
+    transform:
+      translate(-50%, -50%);
   }
 
+  50% {
+    transform:
+      translate(-50%, calc(-50% - 7px));
+  }
 }
 
-
-/* =========================================================
-   LOOK LEFT / RIGHT
-========================================================= */
-
-.look-left .eyeHighlight {
-  transform:
-    translateX(-8px);
-}
-
-.look-right .eyeHighlight {
-  transform:
-    translateX(8px);
-}
-
-
-/* =========================================================
-   LISTENING ANIMATION
-========================================================= */
-
-.listening #dabsyFace {
-  animation:
-    listeningPulse 1.25s ease-in-out infinite;
-}
-
-@keyframes listeningPulse {
-
+@keyframes speakingPulse {
   0%,
   100% {
     transform:
@@ -638,64 +485,69 @@ body {
       translate(-50%, -50%)
       scale(1.025);
   }
-
 }
 
-
-/* =========================================================
-   THINKING ANIMATION
-========================================================= */
-
-.thinking #dabsyFace {
-  animation:
-    thinkingFloat 1.6s ease-in-out infinite;
-}
-
-@keyframes thinkingFloat {
-
+@keyframes thinkingGlow {
   0%,
   100% {
     transform:
-      translate(-50%, -50%);
+      translate(-50%, -50%)
+      scale(.95);
+    opacity: .55;
   }
 
   50% {
     transform:
-      translate(
-        -50%,
-        calc(-50% - 6px)
-      );
+      translate(-50%, -50%)
+      scale(1.08);
+    opacity: 1;
   }
-
 }
-
 
 /* =========================================================
-   SPEAKING ANIMATION
+   PET / RUB REACTION
 ========================================================= */
 
-.speaking #dabsyFace {
+/* Activated by JS later */
+
+.pet-reaction #dabsyFace {
   animation:
-    speakingPulse .75s ease-in-out infinite;
+    petBounce .42s cubic-bezier(.16,1,.3,1);
 }
 
-@keyframes speakingPulse {
+.pet-reaction #faceGlow {
+  transform:
+    translate(-50%, -50%)
+    scale(1.18);
 
-  0%,
-  100% {
+  opacity: 1;
+}
+
+@keyframes petBounce {
+  0% {
     transform:
       translate(-50%, -50%)
       scale(1);
   }
 
-  50% {
+  45% {
     transform:
-      translate(-50%, -50%)
-      scale(1.022);
+      translate(-50%, -54%)
+      scale(1.045);
   }
 
-}
+  75% {
+    transform:
+      translate(-50%, -48%)
+      scale(.985);
+  }
 
+  100% {
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+  }
+}
 
 /* =========================================================
    HANDS
@@ -716,7 +568,6 @@ body {
   pointer-events: none;
 }
 
-
 .hand {
   position: absolute;
 
@@ -730,11 +581,8 @@ body {
 
   transition:
     opacity .35s ease,
-    transform .5s cubic-bezier(.2,.8,.2,1);
+    transform .5s cubic-bezier(.16,1,.3,1);
 }
-
-
-/* Palm */
 
 .hand::before {
   content: "";
@@ -760,9 +608,6 @@ body {
   box-shadow:
     0 0 18px rgba(80,160,255,.4);
 }
-
-
-/* Fingers */
 
 .hand span,
 .hand span::before,
@@ -800,14 +645,12 @@ body {
   top: 1px;
 }
 
-
 .hand.visible {
   opacity: 1;
 
   transform:
     scale(1);
 }
-
 
 #leftHand {
   left: -20px;
@@ -843,52 +686,6 @@ body {
     rotate(-12deg);
 }
 
-
-/* =========================================================
-   EXPRESSION PARTICLES
-========================================================= */
-
-#expressionParticles {
-  position: absolute;
-
-  inset: 0;
-
-  pointer-events: none;
-
-  opacity: 0;
-}
-
-.particle {
-  position: absolute;
-
-  width: 4px;
-  height: 4px;
-
-  border-radius: 50%;
-
-  background:
-    rgba(190,225,255,.8);
-
-  box-shadow:
-    0 0 12px rgba(100,180,255,.7);
-}
-
-.particle-1 {
-  left: 35%;
-  top: 28%;
-}
-
-.particle-2 {
-  left: 64%;
-  top: 32%;
-}
-
-.particle-3 {
-  left: 52%;
-  top: 18%;
-}
-
-
 /* =========================================================
    CONVERSATION
 ========================================================= */
@@ -912,10 +709,10 @@ body {
   pointer-events: none;
 
   transition:
-    bottom .65s cubic-bezier(.2,.8,.2,1),
-    width .65s ease;
+    bottom .6s cubic-bezier(.16,1,.3,1),
+    opacity .4s ease,
+    width .5s ease;
 }
-
 
 #status {
   font-size: 10px;
@@ -931,7 +728,6 @@ body {
   transition:
     opacity .3s ease;
 }
-
 
 #speech {
   font-size:
@@ -956,7 +752,6 @@ body {
 #speech::-webkit-scrollbar {
   display: none;
 }
-
 
 /* =========================================================
    STUDY BADGE
@@ -990,7 +785,7 @@ body {
 
   transition:
     opacity .4s ease,
-    transform .4s ease;
+    transform .4s cubic-bezier(.16,1,.3,1);
 
   z-index: 30;
 }
@@ -1003,9 +798,8 @@ body {
     translateY(0);
 }
 
-
 /* =========================================================
-   CONTENT AREA
+   STUDY CONTENT
 ========================================================= */
 
 #contentArea {
@@ -1014,10 +808,9 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 90vw;
-  max-width: 900px;
+  width: min(92vw, 900px);
 
-  height: 70vh;
+  height: 72vh;
 
   transform:
     translate(-50%, -50%)
@@ -1030,17 +823,16 @@ body {
   overflow-y: auto;
 
   padding:
-    25px 20px 100px;
+    28px 22px 130px;
+
+  scrollbar-width: thin;
 
   transition:
     opacity .65s ease,
-    transform .65s cubic-bezier(.2,.8,.2,1);
+    transform .65s cubic-bezier(.16,1,.3,1);
 
   z-index: 2;
-
-  scrollbar-width: thin;
 }
-
 
 .complex-answer #contentArea {
   opacity: 1;
@@ -1052,15 +844,9 @@ body {
   pointer-events: auto;
 }
 
-
-/*
-   Move D.A.B.S.y out of the way
-   during long study answers.
-*/
-
 .complex-answer #character {
   left: 82%;
-  top: 22%;
+  top: 19%;
 
   width: 190px;
   height: 150px;
@@ -1070,44 +856,70 @@ body {
     scale(.52);
 }
 
-
 .complex-answer #conversation {
-  left: 50%;
-  bottom: 25px;
+  bottom: 22px;
 
-  width: 90vw;
+  width: 88vw;
 
-  opacity: .9;
+  opacity: .95;
 }
 
+/* Make the spoken subtitle compact */
+
+.complex-answer #speech {
+  font-size:
+    clamp(13px, 3vw, 17px);
+
+  line-height: 1.35;
+
+  max-height: 9vh;
+
+  opacity: .7;
+}
+
+/* Title */
 
 #contentTitle {
   font-size:
     clamp(23px, 5vw, 38px);
 
-  font-weight: 700;
+  line-height: 1.15;
+
+  font-weight: 750;
 
   margin-bottom: 18px;
+
+  letter-spacing: -.4px;
 }
 
+/* Main explanation */
 
 #contentText {
   font-size:
     clamp(16px, 3.5vw, 21px);
 
-  line-height: 1.65;
+  line-height: 1.7;
 
   white-space: pre-wrap;
+
+  opacity: .92;
 }
-
-
-#visualArea {
-  margin-top: 25px;
-}
-
 
 /* =========================================================
-   MENU
+   STUDY MODE VISUAL POLISH
+========================================================= */
+
+.study-mode #contentText {
+  text-wrap: pretty;
+}
+
+.study-mode #contentTitle {
+  text-shadow:
+    0 0 28px rgba(80,160,255,.12);
+}
+
+/* =========================================================
+   CONTROLS
 ========================================================= */
 
 #bubbleMenu {
@@ -1119,7 +931,6 @@ body {
 
   z-index: 40;
 }
-
 
 .bubble {
   position: absolute;
@@ -1135,7 +946,7 @@ body {
   background:
     rgba(15,15,18,.92);
 
-  color: #fff;
+  color: white;
 
   display: flex;
 
@@ -1147,28 +958,37 @@ body {
   opacity: 0;
 
   transform:
-    scale(.5);
+    scale(.5)
+    translateY(8px);
 
   pointer-events: none;
 
   transition:
     opacity .25s ease,
-    transform .25s cubic-bezier(.2,.8,.2,1);
+    transform .35s cubic-bezier(.16,1,.3,1),
+    background .2s ease;
 
   box-shadow:
     0 10px 35px rgba(0,0,0,.5);
+
+  backdrop-filter:
+    blur(10px);
 }
 
+.bubble:active {
+  transform:
+    scale(.92);
+}
 
 .menu-open .bubble {
   opacity: 1;
 
   transform:
-    scale(1);
+    scale(1)
+    translateY(0);
 
   pointer-events: auto;
 }
-
 
 #studyBubble {
   left:
@@ -1178,7 +998,6 @@ body {
     calc(50% - 125px);
 }
 
-
 #settingsBubble {
   left:
     calc(50% + 60px);
@@ -1187,11 +1006,9 @@ body {
     calc(50% - 125px);
 }
 
-
 .bubble span {
   font-size: 20px;
 }
-
 
 .bubble small {
   margin-top: 3px;
@@ -1201,9 +1018,8 @@ body {
   opacity: .55;
 }
 
-
 /* =========================================================
-   TOUCH HINT
+   HINT
 ========================================================= */
 
 #hint {
@@ -1227,6 +1043,9 @@ body {
     opacity .4s ease;
 }
 
+.complex-answer #hint {
+  opacity: 0;
+}
 
 /* =========================================================
    SETTINGS
@@ -1263,13 +1082,11 @@ body {
   z-index: 100;
 }
 
-
 #settingsPanel.open {
   opacity: 1;
 
   visibility: visible;
 }
-
 
 .settingsCard {
   position: relative;
@@ -1289,8 +1106,28 @@ body {
 
   box-shadow:
     0 30px 90px rgba(0,0,0,.65);
+
+  animation:
+    settingsAppear .35s cubic-bezier(.16,1,.3,1);
 }
 
+@keyframes settingsAppear {
+  from {
+    transform:
+      translateY(15px)
+      scale(.96);
+
+    opacity: 0;
+  }
+
+  to {
+    transform:
+      translateY(0)
+      scale(1);
+
+    opacity: 1;
+  }
+}
 
 .settingsCard h2 {
   margin:
@@ -1298,7 +1135,6 @@ body {
 
   font-size: 25px;
 }
-
 
 .settingsCard p {
   margin:
@@ -1311,7 +1147,6 @@ body {
   color:
     rgba(255,255,255,.5);
 }
-
 
 #apiKeyInput {
   width: 100%;
@@ -1328,10 +1163,16 @@ body {
   background:
     #08080a;
 
-  color:
-    white;
+  color: white;
 }
 
+#apiKeyInput:focus {
+  border-color:
+    rgba(130,190,255,.5);
+
+  box-shadow:
+    0 0 0 3px rgba(60,140,255,.08);
+}
 
 #keyStatus {
   min-height: 20px;
@@ -1345,7 +1186,6 @@ body {
     rgba(255,255,255,.45);
 }
 
-
 .primaryButton {
   width: 100%;
 
@@ -1356,16 +1196,24 @@ body {
   border-radius: 12px;
 
   background:
-    white;
+    #fff;
 
   color:
-    black;
+    #000;
 
   font-weight: 600;
 
-  cursor: pointer;
+  transition:
+    transform .15s ease,
+    opacity .15s ease;
 }
 
+.primaryButton:active {
+  transform:
+    scale(.97);
+
+  opacity: .8;
+}
 
 .closeButton {
   position: absolute;
@@ -1382,22 +1230,7 @@ body {
   font-size: 27px;
 
   opacity: .5;
-
-  cursor: pointer;
 }
-
-
-/* =========================================================
-   BUTTON PRESS FEEDBACK
-========================================================= */
-
-.bubble:active,
-.primaryButton:active,
-.closeButton:active {
-  transform:
-    scale(.92);
-}
-
 
 /* =========================================================
    MOBILE
@@ -1409,17 +1242,14 @@ body {
     top: 44%;
   }
 
-
   .eye {
     width: 22vw;
     height: 29vw;
   }
 
-
   #dabsyFace {
     gap: 11vw;
   }
-
 
   .complex-answer #character {
     left: 80%;
@@ -1427,4 +1257,43 @@ body {
 
     transform:
       translate(-50%, -50%)
-  
+      scale(.43);
+  }
+
+  #contentArea {
+    width: 94vw;
+
+    height: 71vh;
+
+    padding:
+      22px 16px 120px;
+  }
+
+  #speech {
+    max-height: 24vh;
+  }
+
+  .complex-answer #speech {
+    max-height: 8vh;
+
+    font-size: 13px;
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY / PERFORMANCE
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+
+    scroll-behavior: auto !important;
+
+    transition-duration: .001ms !important;
+  }
+     }
