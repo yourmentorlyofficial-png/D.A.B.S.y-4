@@ -1,61 +1,118 @@
-window.addEventListener("load", function () {
+console.log("DABSy booting...");
 
-  const world = document.getElementById("dabsyWorld");
-  const face = document.getElementById("dabsyFace");
-  const speech = document.getElementById("speech");
-  const status = document.getElementById("status");
+window.addEventListener("DOMContentLoaded", () => {
+
+  const world =
+    document.getElementById("dabsyWorld");
+
+  const face =
+    document.getElementById("dabsyFace");
+
+  const status =
+    document.getElementById("status");
+
+  const speech =
+    document.getElementById("speech");
 
   if (!world || !face) {
-    document.body.innerHTML =
-      "<div style='color:white;background:black;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;text-align:center;padding:30px'>" +
-      "D.A.B.S.y could not find its face.<br><br>HTML is loading, but the face IDs don't match." +
-      "</div>";
+
+    document.body.innerHTML = `
+      <div style="
+        background:#000;
+        color:white;
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        font-family:system-ui;
+        padding:30px;
+      ">
+        D.A.B.S.y couldn't find its face.<br>
+        HTML loaded, but something is wrong.
+      </div>
+    `;
 
     return;
   }
 
-  status.textContent = "DABSy";
-  speech.textContent = "I'm alive. Tap me!";
+  status.textContent = "DABSy Online";
+  speech.textContent = "Hello! I'm alive. 🤖💙";
 
   let timer = null;
 
-  world.addEventListener("pointerdown", function () {
+  world.addEventListener("pointerdown", () => {
 
     clearTimeout(timer);
 
-    timer = setTimeout(function () {
+    face.classList.add("surprised");
 
-      status.textContent = "Listening";
-      speech.textContent = "I'm listening... 👂";
+    status.textContent = "Listening";
+    speech.textContent = "I'm listening... 👂";
 
-      face.classList.add("surprised");
+    timer = setTimeout(() => {
 
-    }, 300);
+      if ("speechSynthesis" in window) {
+
+        speechSynthesis.cancel();
+
+        const voice =
+          new SpeechSynthesisUtterance(
+            "Hi! I'm DABSy. What can I help you with?"
+          );
+
+        voice.lang = "en-IN";
+        voice.pitch = 1.15;
+        voice.rate = 0.98;
+
+        speechSynthesis.speak(voice);
+      }
+
+    }, 350);
 
   });
 
-  world.addEventListener("pointerup", function () {
+  world.addEventListener("pointerup", () => {
 
     clearTimeout(timer);
 
+    face.classList.remove("surprised");
+
     status.textContent = "DABSy";
-    speech.textContent = "Yep! I felt that. 🤖";
+    speech.textContent = "Yep! I felt that. ✨";
+
+  });
+
+  world.addEventListener("pointercancel", () => {
+
+    clearTimeout(timer);
 
     face.classList.remove("surprised");
 
   });
 
-  world.addEventListener("pointercancel", function () {
-
-    clearTimeout(timer);
-
-  });
-
-  world.addEventListener("dblclick", function () {
+  world.addEventListener("dblclick", () => {
 
     status.textContent = "DABSy";
-    speech.textContent = "Double tap detected! ✨";
+    speech.textContent =
+      "Double tap detected! ✨";
 
   });
+
+  setInterval(() => {
+
+    if (
+      !face.classList.contains("surprised")
+    ) {
+
+      face.classList.add("blink");
+
+      setTimeout(() => {
+        face.classList.remove("blink");
+      }, 150);
+
+    }
+
+  }, 3500);
 
 });
