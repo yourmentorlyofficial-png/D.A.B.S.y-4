@@ -1,3 +1,14 @@
+/* =========================================================
+   D.A.B.S.y
+   PREMIUM VISUAL SYSTEM
+   Change 1: Expression Engine
+========================================================= */
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -8,9 +19,12 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
+  padding: 0;
+
   overflow: hidden;
+
   background: #000;
-  color: white;
+  color: #fff;
 
   font-family:
     Inter,
@@ -24,12 +38,13 @@ body {
 body {
   touch-action: manipulation;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 
-/* ==================================================
+/* =========================================================
    WORLD
-================================================== */
+========================================================= */
 
 #dabsyWorld {
   position: relative;
@@ -46,13 +61,14 @@ body {
 
   background: #000;
 
-  isolation: isolate;
+  transition:
+    background 0.8s ease;
 }
 
 
-/* ==================================================
-   BACKGROUND
-================================================== */
+/* =========================================================
+   BACKGROUND GLOW
+========================================================= */
 
 #backgroundGlow {
   position: absolute;
@@ -60,11 +76,11 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 70vw;
-  height: 50vw;
+  width: 65vw;
+  height: 45vw;
 
-  max-width: 750px;
-  max-height: 500px;
+  max-width: 700px;
+  max-height: 450px;
 
   transform:
     translate(-50%, -50%);
@@ -74,41 +90,25 @@ body {
   background:
     radial-gradient(
       ellipse,
-      rgba(55, 140, 255, 0.055),
+      rgba(50, 130, 255, 0.045),
       transparent 70%
     );
 
-  filter: blur(60px);
+  filter: blur(55px);
 
   pointer-events: none;
 
-  animation:
-    ambientGlow 7s ease-in-out infinite;
-}
+  opacity: .9;
 
-@keyframes ambientGlow {
-
-  0%,
-  100% {
-    opacity: .65;
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  50% {
-    opacity: 1;
-    transform:
-      translate(-50%, -50%)
-      scale(1.08);
-  }
-
+  transition:
+    opacity .8s ease,
+    transform 1s ease;
 }
 
 
-/* ==================================================
+/* =========================================================
    CHARACTER
-================================================== */
+========================================================= */
 
 #character {
   position: absolute;
@@ -124,33 +124,18 @@ body {
 
   z-index: 5;
 
-  pointer-events: none;
-
-  animation:
-    characterIdle 5s ease-in-out infinite;
-}
-
-@keyframes characterIdle {
-
-  0%,
-  100% {
-    transform:
-      translate(-50%, -50%)
-      translateY(0);
-  }
-
-  50% {
-    transform:
-      translate(-50%, -50%)
-      translateY(-4px);
-  }
-
+  transition:
+    width .8s cubic-bezier(.2,.8,.2,1),
+    height .8s cubic-bezier(.2,.8,.2,1),
+    left .8s cubic-bezier(.2,.8,.2,1),
+    top .8s cubic-bezier(.2,.8,.2,1),
+    transform .8s cubic-bezier(.2,.8,.2,1);
 }
 
 
-/* ==================================================
+/* =========================================================
    FACE GLOW
-================================================== */
+========================================================= */
 
 #faceGlow {
   position: absolute;
@@ -169,23 +154,26 @@ body {
   background:
     radial-gradient(
       ellipse,
-      rgba(45, 130, 255, .11),
+      rgba(45, 130, 255, .10),
       transparent 70%
     );
 
   filter: blur(45px);
 
-  opacity: .8;
+  opacity: .9;
+
+  pointer-events: none;
 
   transition:
-    opacity .5s ease,
-    transform .6s ease;
+    opacity .6s ease,
+    transform .6s ease,
+    filter .6s ease;
 }
 
 
-/* ==================================================
+/* =========================================================
    FACE
-================================================== */
+========================================================= */
 
 #dabsyFace {
   position: absolute;
@@ -209,58 +197,70 @@ body {
 }
 
 
-/* ==================================================
+/* =========================================================
    EYES
-================================================== */
+========================================================= */
 
 .eye {
   position: relative;
 
-  width:
-    clamp(82px, 19vw, 155px);
+  width: clamp(82px, 19vw, 155px);
+  height: clamp(110px, 27vw, 195px);
 
-  height:
-    clamp(110px, 27vw, 195px);
-
-  border-radius: 38%;
-
-  background:
-    linear-gradient(
-      145deg,
-      #ffffff,
-      #dcecff 55%,
-      #b8d8ff
-    );
-
-  box-shadow:
-
-    0 0 12px
-      rgba(150,205,255,.75),
-
-    0 0 35px
-      rgba(50,145,255,.35),
-
-    0 0 80px
-      rgba(30,110,255,.15);
+  flex-shrink: 0;
 
   overflow: hidden;
 
   transform-origin: center;
 
   transition:
-
-    width .35s ease,
-    height .35s ease,
-    border-radius .35s ease,
-    transform .45s cubic-bezier(.2,.8,.2,1),
-    filter .35s ease,
-    box-shadow .35s ease;
+    width .38s cubic-bezier(.2,.8,.2,1),
+    height .38s cubic-bezier(.2,.8,.2,1),
+    transform .42s cubic-bezier(.2,.8,.2,1),
+    border-radius .42s ease,
+    filter .42s ease;
 }
 
 
-/* ==================================================
+/*
+   The actual visible eye.
+
+   Keeping this as a separate element means
+   expressions can morph the eye without
+   breaking highlights/glow.
+*/
+
+.eyeShape {
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 38%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fff,
+      #dcecff 55%,
+      #b8d8ff
+    );
+
+  box-shadow:
+    0 0 12px rgba(150,205,255,.75),
+    0 0 35px rgba(50,145,255,.35),
+    0 0 80px rgba(30,110,255,.15);
+
+  transition:
+    border-radius .42s cubic-bezier(.2,.8,.2,1),
+    clip-path .42s cubic-bezier(.2,.8,.2,1),
+    transform .42s cubic-bezier(.2,.8,.2,1),
+    opacity .35s ease;
+}
+
+
+/* =========================================================
    EYE HIGHLIGHT
-================================================== */
+========================================================= */
 
 .eyeHighlight {
   position: absolute;
@@ -274,22 +274,76 @@ body {
   border-radius: 50%;
 
   background:
-    rgba(255,255,255,.9);
+    rgba(255,255,255,.88);
 
   filter: blur(1px);
 
   transition:
+    left .35s ease,
+    top .35s ease,
+    opacity .3s ease,
+    transform .35s ease;
+}
+
+
+/* =========================================================
+   SECONDARY EYE GLOW
+========================================================= */
+
+.eyeGlow {
+  position: absolute;
+
+  inset: -15%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.10),
+      transparent 62%
+    );
+
+  pointer-events: none;
+
+  opacity: .8;
+
+  transition:
+    opacity .4s ease,
     transform .4s ease;
 }
 
 
-/* ==================================================
+/* =========================================================
+   DEFAULT / IDLE
+========================================================= */
+
+/*
+   This is D.A.B.S.y's normal face.
+
+   IMPORTANT:
+   No smile.
+   No permanent curves.
+   No weird expression.
+
+   Just the clean signature eyes.
+*/
+
+.expression-idle .eyeShape {
+  border-radius: 38%;
+}
+
+.expression-idle .eye {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
    BLINK
-================================================== */
+========================================================= */
 
 .blink .eye {
-
-  height: 10px;
+  height: 13px;
 
   border-radius: 50%;
 
@@ -297,223 +351,280 @@ body {
     scaleY(.65);
 }
 
-
-/* ==================================================
-   EYE LOOKING
-================================================== */
-
-.look-left .eye {
-  transform:
-    translateX(-14px);
+.blink .eyeShape {
+  border-radius: 50%;
 }
 
-.look-right .eye {
-  transform:
-    translateX(14px);
+.blink .eyeHighlight,
+.blink .eyeGlow {
+  opacity: 0;
 }
 
 
-/* ==================================================
+/* =========================================================
    HAPPY
-================================================== */
+========================================================= */
 
-.happy .eye {
+/*
+   VERY subtle joy.
 
-  height:
-    clamp(78px, 19vw, 132px);
+   The lower part curves upward.
+   It only appears when JS chooses
+   the happy state.
+*/
 
+.expression-happy .eyeShape {
   border-radius:
-    45% 45% 55% 55%;
+    48% 48% 62% 62%;
 
+  clip-path:
+    polygon(
+      0 0,
+      100% 0,
+      100% 57%,
+      96% 67%,
+      88% 76%,
+      76% 84%,
+      62% 90%,
+      50% 93%,
+      38% 90%,
+      24% 84%,
+      12% 76%,
+      4% 67%,
+      0 57%
+    );
 }
 
-
-/* ==================================================
-   CONFUSED
-================================================== */
-
-.confused .left-eye {
-
+.expression-happy .eye {
   transform:
-    rotate(-7deg)
-    translateY(2px);
-
+    translateY(-2px)
+    scale(.98);
 }
 
-.confused .right-eye {
-
-  transform:
-    rotate(7deg)
-    translateY(-2px);
-
-}
-
-
-/* ==================================================
-   SURPRISED
-================================================== */
-
-.surprised .eye {
-
-  transform:
-    scale(1.08);
-
-}
-
-.surprised #faceGlow {
-
-  opacity: 1.2;
-
+.expression-happy #faceGlow {
+  opacity: 1;
   transform:
     translate(-50%, -50%)
-    scale(1.12);
-
+    scale(1.08);
 }
 
 
-/* ==================================================
+/* =========================================================
+   SAD
+========================================================= */
+
+/*
+   Gentle droop.
+   Nothing exaggerated.
+*/
+
+.expression-sad .left-eye {
+  transform:
+    rotate(4deg)
+    translateY(4px);
+}
+
+.expression-sad .right-eye {
+  transform:
+    rotate(-4deg)
+    translateY(4px);
+}
+
+.expression-sad .eyeShape {
+  border-radius:
+    58% 58% 34% 34%;
+}
+
+.expression-sad .eyeHighlight {
+  top: 18%;
+  opacity: .7;
+}
+
+
+/* =========================================================
+   CURIOUS
+========================================================= */
+
+.expression-curious .left-eye {
+  transform:
+    rotate(-5deg)
+    translateY(-4px);
+}
+
+.expression-curious .right-eye {
+  transform:
+    rotate(3deg)
+    translateY(2px);
+}
+
+.expression-curious .eyeShape {
+  border-radius:
+    42% 42% 36% 36%;
+}
+
+
+/* =========================================================
+   CONFUSED
+========================================================= */
+
+.expression-confused .left-eye {
+  transform:
+    rotate(-7deg)
+    translateY(4px);
+}
+
+.expression-confused .right-eye {
+  transform:
+    rotate(7deg)
+    translateY(-3px);
+}
+
+.expression-confused .left-eye .eyeHighlight {
+  transform:
+    translateY(4px);
+}
+
+.expression-confused .right-eye .eyeHighlight {
+  transform:
+    translateY(-2px);
+}
+
+
+/* =========================================================
+   SURPRISED
+========================================================= */
+
+.expression-surprised .eye {
+  transform:
+    scale(1.08);
+}
+
+.expression-surprised .eyeShape {
+  border-radius:
+    44%;
+}
+
+.expression-surprised .eyeHighlight {
+  transform:
+    scale(1.08);
+}
+
+
+/* =========================================================
    SLEEPY
-================================================== */
+========================================================= */
 
-.sleepy .eye {
-
+.expression-sleepy .eye {
   height:
-    clamp(52px, 14vw, 90px);
+    clamp(55px, 14vw, 90px);
 
+  transform:
+    translateY(18px);
+}
+
+.expression-sleepy .eyeShape {
   border-radius:
     50%;
+}
 
+.expression-sleepy .eyeHighlight {
+  opacity: .45;
 }
 
 
-/* ==================================================
-   FOCUSED
-================================================== */
-
-.focused .eye {
-
-  filter:
-    brightness(1.08);
-
-}
-
-
-/* ==================================================
-   LISTENING
-================================================== */
-
-.listening #dabsyFace {
-
-  animation:
-    listeningPulse 1.2s
-    ease-in-out
-    infinite;
-
-}
-
-.listening .eye {
-
-  box-shadow:
-
-    0 0 15px
-      rgba(150,205,255,.9),
-
-    0 0 45px
-      rgba(50,145,255,.5),
-
-    0 0 100px
-      rgba(30,110,255,.22);
-
-}
-
-
-/* ==================================================
+/* =========================================================
    THINKING
-================================================== */
+========================================================= */
 
-.thinking #dabsyFace {
-
-  animation:
-    thinkingFloat 1.7s
-    ease-in-out
-    infinite;
-
+.expression-thinking .left-eye {
+  transform:
+    translateX(-5px)
+    rotate(-2deg);
 }
 
-.thinking .eyeHighlight {
+.expression-thinking .right-eye {
+  transform:
+    translateX(5px)
+    rotate(2deg);
+}
 
-  animation:
-    thinkingEyes 1.4s
-    ease-in-out
-    infinite;
-
+.expression-thinking .eyeHighlight {
+  transform:
+    translateX(7px);
 }
 
 
-/* ==================================================
+/* =========================================================
+   LISTENING
+========================================================= */
+
+.expression-listening .eye {
+  transform:
+    scale(1.015);
+}
+
+.expression-listening .eyeShape {
+  border-radius:
+    40%;
+}
+
+.expression-listening .eyeGlow {
+  opacity: 1.15;
+}
+
+
+/* =========================================================
    SPEAKING
-================================================== */
+========================================================= */
 
-.speaking #dabsyFace {
-
+.expression-speaking .eye {
   animation:
-    speakingPulse .72s
-    ease-in-out
-    infinite;
-
+    eyeSpeaking .72s ease-in-out infinite;
 }
 
-.speaking #faceGlow {
-
-  animation:
-    speakingGlow .72s
-    ease-in-out
-    infinite;
-
-}
-
-
-/* ==================================================
-   ANIMATIONS
-================================================== */
-
-@keyframes listeningPulse {
+@keyframes eyeSpeaking {
 
   0%,
   100% {
     transform:
-      translate(-50%, -50%)
+      translateY(0)
       scale(1);
   }
 
   50% {
     transform:
-      translate(-50%, -50%)
-      scale(1.035);
+      translateY(-2px)
+      scale(1.018);
   }
 
 }
 
 
-@keyframes thinkingFloat {
+/* =========================================================
+   LOOK LEFT / RIGHT
+========================================================= */
 
-  0%,
-  100% {
-    transform:
-      translate(-50%, -50%)
-      translateY(0);
-  }
+.look-left .eyeHighlight {
+  transform:
+    translateX(-8px);
+}
 
-  50% {
-    transform:
-      translate(-50%, -50%)
-      translateY(-7px);
-  }
-
+.look-right .eyeHighlight {
+  transform:
+    translateX(8px);
 }
 
 
-@keyframes speakingPulse {
+/* =========================================================
+   LISTENING ANIMATION
+========================================================= */
+
+.listening #dabsyFace {
+  animation:
+    listeningPulse 1.25s ease-in-out infinite;
+}
+
+@keyframes listeningPulse {
 
   0%,
   100% {
@@ -531,42 +642,66 @@ body {
 }
 
 
-@keyframes thinkingEyes {
+/* =========================================================
+   THINKING ANIMATION
+========================================================= */
+
+.thinking #dabsyFace {
+  animation:
+    thinkingFloat 1.6s ease-in-out infinite;
+}
+
+@keyframes thinkingFloat {
 
   0%,
   100% {
     transform:
-      translate(0, 0);
+      translate(-50%, -50%);
   }
 
   50% {
     transform:
-      translate(8px, 4px);
+      translate(
+        -50%,
+        calc(-50% - 6px)
+      );
   }
 
 }
 
 
-@keyframes speakingGlow {
+/* =========================================================
+   SPEAKING ANIMATION
+========================================================= */
+
+.speaking #dabsyFace {
+  animation:
+    speakingPulse .75s ease-in-out infinite;
+}
+
+@keyframes speakingPulse {
 
   0%,
   100% {
-    opacity: .75;
+    transform:
+      translate(-50%, -50%)
+      scale(1);
   }
 
   50% {
-    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1.022);
   }
 
 }
 
 
-/* ==================================================
+/* =========================================================
    HANDS
-================================================== */
+========================================================= */
 
 #hands {
-
   position: absolute;
 
   left: 50%;
@@ -579,12 +714,10 @@ body {
     translate(-50%, -50%);
 
   pointer-events: none;
-
 }
 
 
 .hand {
-
   position: absolute;
 
   width: 58px;
@@ -596,17 +729,14 @@ body {
     scale(.5);
 
   transition:
-
     opacity .35s ease,
-
-    transform .5s
-      cubic-bezier(.2,.8,.2,1);
-
+    transform .5s cubic-bezier(.2,.8,.2,1);
 }
 
 
-.hand::before {
+/* Palm */
 
+.hand::before {
   content: "";
 
   position: absolute;
@@ -628,16 +758,15 @@ body {
     );
 
   box-shadow:
-    0 0 18px
-      rgba(80,160,255,.4);
-
+    0 0 18px rgba(80,160,255,.4);
 }
 
+
+/* Fingers */
 
 .hand span,
 .hand span::before,
 .hand span::after {
-
   position: absolute;
 
   width: 10px;
@@ -648,49 +777,39 @@ body {
   background:
     #c5e4ff;
 
+  box-shadow:
+    0 0 8px rgba(70,150,255,.25);
 }
-
 
 .hand span {
-
   left: 7px;
   top: 13px;
-
 }
 
-
 .hand span::before {
-
   content: "";
 
   left: 14px;
   top: -5px;
-
 }
 
-
 .hand span::after {
-
   content: "";
 
   left: 28px;
   top: 1px;
-
 }
 
 
 .hand.visible {
-
   opacity: 1;
 
   transform:
     scale(1);
-
 }
 
 
 #leftHand {
-
   left: -20px;
   top: 50%;
 
@@ -698,12 +817,9 @@ body {
     translateY(-50%)
     scale(.5)
     rotate(12deg);
-
 }
 
-
 #rightHand {
-
   right: -20px;
   top: 50%;
 
@@ -711,42 +827,77 @@ body {
     translateY(-50%)
     scale(.5)
     rotate(-12deg);
-
 }
 
-
 #leftHand.visible {
-
   transform:
     translateY(-50%)
     scale(1)
     rotate(12deg);
-
 }
 
-
 #rightHand.visible {
-
   transform:
     translateY(-50%)
     scale(1)
     rotate(-12deg);
-
 }
 
 
-/* ==================================================
+/* =========================================================
+   EXPRESSION PARTICLES
+========================================================= */
+
+#expressionParticles {
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0;
+}
+
+.particle {
+  position: absolute;
+
+  width: 4px;
+  height: 4px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(190,225,255,.8);
+
+  box-shadow:
+    0 0 12px rgba(100,180,255,.7);
+}
+
+.particle-1 {
+  left: 35%;
+  top: 28%;
+}
+
+.particle-2 {
+  left: 64%;
+  top: 32%;
+}
+
+.particle-3 {
+  left: 52%;
+  top: 18%;
+}
+
+
+/* =========================================================
    CONVERSATION
-================================================== */
+========================================================= */
 
 #conversation {
-
   position: absolute;
 
   left: 50%;
-
-  bottom:
-    max(8vh, 55px);
+  bottom: max(8vh, 55px);
 
   transform:
     translateX(-50%);
@@ -760,11 +911,13 @@ body {
 
   pointer-events: none;
 
+  transition:
+    bottom .65s cubic-bezier(.2,.8,.2,1),
+    width .65s ease;
 }
 
 
 #status {
-
   font-size: 10px;
 
   letter-spacing: 2px;
@@ -775,11 +928,12 @@ body {
 
   margin-bottom: 8px;
 
+  transition:
+    opacity .3s ease;
 }
 
 
 #speech {
-
   font-size:
     clamp(16px, 4.2vw, 25px);
 
@@ -792,23 +946,23 @@ body {
   scrollbar-width: none;
 
   text-shadow:
-    0 0 20px
-    rgba(255,255,255,.10);
+    0 0 20px rgba(255,255,255,.10);
 
+  transition:
+    opacity .25s ease,
+    transform .35s ease;
 }
-
 
 #speech::-webkit-scrollbar {
   display: none;
 }
 
 
-/* ==================================================
+/* =========================================================
    STUDY BADGE
-================================================== */
+========================================================= */
 
 #studyBadge {
-
   position: absolute;
 
   top:
@@ -826,8 +980,7 @@ body {
     7px 13px;
 
   border:
-    1px solid
-    rgba(120,180,255,.25);
+    1px solid rgba(120,180,255,.25);
 
   border-radius: 999px;
 
@@ -836,32 +989,26 @@ body {
   letter-spacing: 1.4px;
 
   transition:
-
     opacity .4s ease,
     transform .4s ease;
 
   z-index: 30;
-
 }
 
-
 .study-mode #studyBadge {
-
   opacity: .8;
 
   transform:
     translateX(-50%)
     translateY(0);
-
 }
 
 
-/* ==================================================
+/* =========================================================
    CONTENT AREA
-================================================== */
+========================================================= */
 
 #contentArea {
-
   position: absolute;
 
   left: 50%;
@@ -886,19 +1033,16 @@ body {
     25px 20px 100px;
 
   transition:
-
     opacity .65s ease,
-
-    transform .65s
-      cubic-bezier(.2,.8,.2,1);
+    transform .65s cubic-bezier(.2,.8,.2,1);
 
   z-index: 2;
 
+  scrollbar-width: thin;
 }
 
 
 .complex-answer #contentArea {
-
   opacity: 1;
 
   transform:
@@ -906,12 +1050,15 @@ body {
     scale(1);
 
   pointer-events: auto;
-
 }
 
 
-.complex-answer #character {
+/*
+   Move D.A.B.S.y out of the way
+   during long study answers.
+*/
 
+.complex-answer #character {
   left: 82%;
   top: 22%;
 
@@ -921,59 +1068,49 @@ body {
   transform:
     translate(-50%, -50%)
     scale(.52);
-
 }
 
 
 .complex-answer #conversation {
-
   left: 50%;
   bottom: 25px;
 
   width: 90vw;
 
   opacity: .9;
-
 }
 
 
 #contentTitle {
-
   font-size:
     clamp(23px, 5vw, 38px);
 
   font-weight: 700;
 
   margin-bottom: 18px;
-
 }
 
 
 #contentText {
-
   font-size:
     clamp(16px, 3.5vw, 21px);
 
   line-height: 1.65;
 
   white-space: pre-wrap;
-
 }
 
 
 #visualArea {
-
   margin-top: 25px;
-
 }
 
 
-/* ==================================================
+/* =========================================================
    MENU
-================================================== */
+========================================================= */
 
 #bubbleMenu {
-
   position: absolute;
 
   inset: 0;
@@ -981,12 +1118,10 @@ body {
   pointer-events: none;
 
   z-index: 40;
-
 }
 
 
 .bubble {
-
   position: absolute;
 
   width: 60px;
@@ -995,20 +1130,18 @@ body {
   border-radius: 50%;
 
   border:
-    1px solid
-    rgba(255,255,255,.12);
+    1px solid rgba(255,255,255,.12);
 
   background:
     rgba(15,15,18,.92);
 
-  color: white;
+  color: #fff;
 
   display: flex;
 
   flex-direction: column;
 
   align-items: center;
-
   justify-content: center;
 
   opacity: 0;
@@ -1019,75 +1152,64 @@ body {
   pointer-events: none;
 
   transition:
-
     opacity .25s ease,
-    transform .25s ease;
+    transform .25s cubic-bezier(.2,.8,.2,1);
 
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.5);
 }
 
 
 .menu-open .bubble {
-
   opacity: 1;
 
   transform:
     scale(1);
 
   pointer-events: auto;
-
 }
 
 
 #studyBubble {
-
   left:
     calc(50% - 120px);
 
   top:
     calc(50% - 125px);
-
 }
 
 
 #settingsBubble {
-
   left:
     calc(50% + 60px);
 
   top:
     calc(50% - 125px);
-
 }
 
 
 .bubble span {
-
   font-size: 20px;
-
 }
 
 
 .bubble small {
-
   margin-top: 3px;
 
   font-size: 8px;
 
   opacity: .55;
-
 }
 
 
-/* ==================================================
-   HINT
-================================================== */
+/* =========================================================
+   TOUCH HINT
+========================================================= */
 
 #hint {
-
   position: absolute;
 
   left: 50%;
-
   bottom: 18px;
 
   transform:
@@ -1101,15 +1223,16 @@ body {
 
   white-space: nowrap;
 
+  transition:
+    opacity .4s ease;
 }
 
 
-/* ==================================================
+/* =========================================================
    SETTINGS
-================================================== */
+========================================================= */
 
 #settingsPanel {
-
   position: fixed;
 
   inset: 0;
@@ -1117,7 +1240,6 @@ body {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   padding: 20px;
@@ -1139,21 +1261,17 @@ body {
     opacity .25s ease;
 
   z-index: 100;
-
 }
 
 
 #settingsPanel.open {
-
   opacity: 1;
 
   visibility: visible;
-
 }
 
 
 .settingsCard {
-
   position: relative;
 
   width:
@@ -1162,8 +1280,7 @@ body {
   padding: 28px;
 
   border:
-    1px solid
-    rgba(255,255,255,.12);
+    1px solid rgba(255,255,255,.12);
 
   border-radius: 25px;
 
@@ -1171,24 +1288,19 @@ body {
     rgba(16,16,19,.96);
 
   box-shadow:
-    0 30px 90px
-    rgba(0,0,0,.65);
-
+    0 30px 90px rgba(0,0,0,.65);
 }
 
 
 .settingsCard h2 {
-
   margin:
     0 0 8px;
 
   font-size: 25px;
-
 }
 
 
 .settingsCard p {
-
   margin:
     0 0 20px;
 
@@ -1198,33 +1310,30 @@ body {
 
   color:
     rgba(255,255,255,.5);
-
 }
 
 
 #apiKeyInput {
-
   width: 100%;
 
   padding: 13px;
 
   border:
-    1px solid
-    rgba(255,255,255,.12);
+    1px solid rgba(255,255,255,.12);
 
   border-radius: 12px;
 
   outline: none;
 
-  background: #08080a;
+  background:
+    #08080a;
 
-  color: white;
-
+  color:
+    white;
 }
 
 
 #keyStatus {
-
   min-height: 20px;
 
   margin:
@@ -1234,12 +1343,10 @@ body {
 
   color:
     rgba(255,255,255,.45);
-
 }
 
 
 .primaryButton {
-
   width: 100%;
 
   padding: 13px;
@@ -1248,17 +1355,19 @@ body {
 
   border-radius: 12px;
 
-  background: white;
+  background:
+    white;
 
-  color: black;
+  color:
+    black;
 
   font-weight: 600;
 
+  cursor: pointer;
 }
 
 
 .closeButton {
-
   position: absolute;
 
   top: 13px;
@@ -1274,53 +1383,48 @@ body {
 
   opacity: .5;
 
+  cursor: pointer;
 }
 
 
-/* ==================================================
+/* =========================================================
+   BUTTON PRESS FEEDBACK
+========================================================= */
+
+.bubble:active,
+.primaryButton:active,
+.closeButton:active {
+  transform:
+    scale(.92);
+}
+
+
+/* =========================================================
    MOBILE
-================================================== */
+========================================================= */
 
 @media (max-width: 500px) {
 
   #character {
-
     top: 44%;
-
   }
 
 
   .eye {
-
     width: 22vw;
     height: 29vw;
-
   }
 
 
   #dabsyFace {
-
     gap: 11vw;
-
   }
 
 
   .complex-answer #character {
-
     left: 80%;
     top: 17%;
 
     transform:
       translate(-50%, -50%)
-      scale(.43);
-
-  }
-
-
-  #speech {
-
-    max-height: 24vh;
-
-  }
-
-}
+  
