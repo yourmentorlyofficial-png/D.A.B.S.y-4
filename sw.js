@@ -1,4 +1,4 @@
-const CACHE_NAME = "dabsy-v5";
+const CACHE_NAME = "dabsy-premium-v99";
 
 const APP_FILES = [
   "./",
