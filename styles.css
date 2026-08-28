@@ -1,3 +1,8 @@
+/* =========================================================
+   D.A.B.S.y — PREMIUM VISUAL SYSTEM
+   PWA-safe • subtle • alive • sleek
+========================================================= */
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -5,13 +10,12 @@
 
 html,
 body {
+  margin: 0;
   width: 100%;
   height: 100%;
-  margin: 0;
   overflow: hidden;
   background: #000;
   color: #fff;
-
   font-family:
     Inter,
     system-ui,
@@ -22,8 +26,8 @@ body {
 }
 
 body {
-  touch-action: manipulation;
   user-select: none;
+  touch-action: manipulation;
 }
 
 /* =========================================================
@@ -32,42 +36,41 @@ body {
 
 #dabsyWorld {
   position: relative;
-
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
   height: 100dvh;
-
   overflow: hidden;
 
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
   background:
     radial-gradient(
-      circle at 50% 48%,
-      rgba(25, 55, 95, 0.035),
-      transparent 42%
+      circle at 50% 43%,
+      rgba(255, 255, 255, 0.035),
+      transparent 30%
     ),
     #000;
 
   transition:
-    background 1s ease;
+    background 700ms ease,
+    transform 300ms ease;
 }
 
-/* Ambient glow */
+/* =========================================================
+   BACKGROUND ATMOSPHERE
+========================================================= */
 
 #backgroundGlow {
   position: absolute;
+  width: 60vw;
+  height: 60vw;
+  max-width: 520px;
+  max-height: 520px;
 
   left: 50%;
-  top: 50%;
-
-  width: 70vw;
-  height: 55vw;
-
-  max-width: 800px;
-  max-height: 550px;
+  top: 43%;
 
   transform: translate(-50%, -50%);
 
@@ -75,34 +78,30 @@ body {
 
   background:
     radial-gradient(
-      ellipse,
-      rgba(45, 130, 255, 0.07),
-      rgba(20, 90, 190, 0.025) 40%,
-      transparent 72%
+      circle,
+      rgba(255, 255, 255, 0.055) 0%,
+      rgba(255, 255, 255, 0.018) 32%,
+      transparent 70%
     );
 
-  filter: blur(60px);
+  filter: blur(25px);
 
   pointer-events: none;
 
   animation:
-    ambientBreathing 6s ease-in-out infinite;
+    ambientGlow 7s ease-in-out infinite;
 }
 
-@keyframes ambientBreathing {
+@keyframes ambientGlow {
   0%,
   100% {
-    opacity: 0.65;
-    transform:
-      translate(-50%, -50%)
-      scale(0.96);
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(0.94);
   }
 
   50% {
-    opacity: 1;
-    transform:
-      translate(-50%, -50%)
-      scale(1.04);
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.04);
   }
 }
 
@@ -111,41 +110,18 @@ body {
 ========================================================= */
 
 #character {
-  position: absolute;
-
-  left: 50%;
-  top: 47%;
-
-  width: min(90vw, 700px);
-  height: min(55vh, 430px);
-
-  transform:
-    translate(-50%, -50%);
-
+  position: relative;
   z-index: 5;
 
+  width: min(92vw, 560px);
+  height: min(52vw, 310px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   transition:
-    width 0.8s cubic-bezier(.16,1,.3,1),
-    height 0.8s cubic-bezier(.16,1,.3,1),
-    left 0.8s cubic-bezier(.16,1,.3,1),
-    top 0.8s cubic-bezier(.16,1,.3,1),
-    transform 0.8s cubic-bezier(.16,1,.3,1);
-}
-
-/* tiny idle movement */
-
-#character::after {
-  content: "";
-
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 1px;
-  height: 1px;
-
-  pointer-events: none;
+    transform 450ms cubic-bezier(.22, .8, .2, 1);
 }
 
 /* =========================================================
@@ -155,33 +131,29 @@ body {
 #faceGlow {
   position: absolute;
 
-  left: 50%;
-  top: 50%;
-
-  width: 70%;
-  height: 55%;
-
-  transform:
-    translate(-50%, -50%);
+  width: 270px;
+  height: 150px;
 
   border-radius: 50%;
 
   background:
     radial-gradient(
       ellipse,
-      rgba(45, 130, 255, 0.12),
-      rgba(30, 100, 210, 0.035) 48%,
+      rgba(255, 255, 255, 0.075) 0%,
+      rgba(255, 255, 255, 0.035) 35%,
       transparent 72%
     );
 
-  filter: blur(42px);
+  filter: blur(25px);
 
   opacity: 0.8;
 
+  pointer-events: none;
+
   transition:
-    transform 0.7s ease,
-    opacity 0.7s ease,
-    filter 0.7s ease;
+    opacity 500ms ease,
+    transform 600ms ease,
+    filter 500ms ease;
 }
 
 /* =========================================================
@@ -189,24 +161,21 @@ body {
 ========================================================= */
 
 #dabsyFace {
-  position: absolute;
+  position: relative;
 
-  left: 50%;
-  top: 50%;
-
-  transform:
-    translate(-50%, -50%);
+  width: 230px;
+  height: 125px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
+  gap: 52px;
 
-  gap: clamp(35px, 9vw, 90px);
+  z-index: 2;
 
   transition:
-    transform 0.45s cubic-bezier(.16,1,.3,1),
-    gap 0.45s ease;
+    transform 450ms cubic-bezier(.22, .8, .2, 1),
+    filter 450ms ease;
 }
 
 /* =========================================================
@@ -216,336 +185,385 @@ body {
 .eye {
   position: relative;
 
-  width: clamp(82px, 19vw, 155px);
-  height: clamp(110px, 27vw, 195px);
+  width: 42px;
+  height: 72px;
 
-  border-radius:
-    38%;
+  border-radius: 50%;
 
   background:
-    linear-gradient(
-      145deg,
-      #ffffff 0%,
-      #edf6ff 48%,
-      #b8d8ff 100%
+    radial-gradient(
+      ellipse at 50% 45%,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.98) 35%,
+      rgba(255, 255, 255, 0.82) 58%,
+      rgba(255, 255, 255, 0.35) 78%,
+      transparent 100%
     );
 
-  box-shadow:
-    0 0 12px rgba(150,205,255,.75),
-    0 0 35px rgba(50,145,255,.35),
-    0 0 80px rgba(30,110,255,.15);
-
-  overflow: hidden;
+  filter:
+    drop-shadow(0 0 7px rgba(255, 255, 255, 0.85))
+    drop-shadow(0 0 18px rgba(255, 255, 255, 0.38))
+    blur(0.15px);
 
   transform-origin: center;
 
   transition:
-    width .35s cubic-bezier(.16,1,.3,1),
-    height .35s cubic-bezier(.16,1,.3,1),
-    border-radius .35s cubic-bezier(.16,1,.3,1),
-    transform .35s cubic-bezier(.16,1,.3,1),
-    filter .35s ease,
-    box-shadow .35s ease;
+    height 350ms cubic-bezier(.2, .8, .2, 1),
+    width 350ms cubic-bezier(.2, .8, .2, 1),
+    transform 450ms cubic-bezier(.2, .8, .2, 1),
+    border-radius 450ms ease,
+    opacity 300ms ease,
+    filter 450ms ease;
 }
 
-/* subtle inner shine */
+/*
+   The glow is intentionally created by the eye itself
+   and its shadows instead of a rectangular pseudo-element.
+   This prevents the "box around the eyes" effect.
+*/
 
 .eye::after {
   content: "";
 
   position: absolute;
 
-  left: -30%;
-  top: -20%;
+  inset: -22px;
 
-  width: 160%;
-  height: 50%;
+  border-radius: 50%;
 
   background:
-    linear-gradient(
-      100deg,
-      transparent,
-      rgba(255,255,255,.18),
-      transparent
+    radial-gradient(
+      ellipse,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.07) 28%,
+      rgba(255, 255, 255, 0.025) 48%,
+      transparent 72%
     );
 
-  transform:
-    rotate(-8deg);
+  filter: blur(13px);
 
-  opacity: .35;
+  opacity: 0.65;
+
+  z-index: -1;
 
   pointer-events: none;
+
+  transition:
+    opacity 450ms ease,
+    transform 450ms ease;
 }
 
-/* Eye highlight */
+/* =========================================================
+   EYE HIGHLIGHT
+========================================================= */
 
 .eyeHighlight {
   position: absolute;
 
-  width: 25%;
-  height: 18%;
+  width: 9px;
+  height: 18px;
 
-  left: 16%;
-  top: 12%;
+  left: 9px;
+  top: 12px;
 
   border-radius: 50%;
 
-  background:
-    rgba(255,255,255,.9);
+  background: rgba(255, 255, 255, 0.75);
 
-  filter: blur(1px);
+  filter: blur(2px);
+
+  opacity: 0.55;
 
   transition:
-    transform .3s ease;
+    transform 400ms ease,
+    opacity 300ms ease;
 }
 
 /* =========================================================
-   NATURAL EXPRESSIONS
+   IDLE BREATH
 ========================================================= */
 
-/* Blink */
-
-.blink .eye {
-  height: 12px;
-
-  border-radius: 50%;
-
-  transform:
-    scaleY(.65);
+.eye {
+  animation:
+    eyeBreath 4.5s ease-in-out infinite;
 }
 
-/* Look */
-
-.look-left .eye {
-  transform:
-    translateX(-13px);
+.right-eye {
+  animation-delay: 180ms;
 }
 
-.look-right .eye {
-  transform:
-    translateX(13px);
+@keyframes eyeBreath {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.965);
+  }
 }
 
-/* Happy
-   Bottom curve, used briefly rather than constantly.
+/* =========================================================
+   BLINK
+========================================================= */
+
+#dabsyFace.blink .eye,
+.eye.blink {
+  height: 5px;
+
+  border-radius: 999px;
+
+  filter:
+    drop-shadow(0 0 5px rgba(255, 255, 255, 0.75));
+
+  animation: none;
+}
+
+#dabsyFace.blink .eye::after {
+  opacity: 0.15;
+}
+
+/* =========================================================
+   LOOK LEFT / RIGHT
+========================================================= */
+
+#dabsyFace.look-left .eye {
+  transform: translateX(-8px);
+}
+
+#dabsyFace.look-right .eye {
+  transform: translateX(8px);
+}
+
+#dabsyFace.look-left .eyeHighlight {
+  transform: translateX(-3px);
+}
+
+#dabsyFace.look-right .eyeHighlight {
+  transform: translateX(3px);
+}
+
+/* =========================================================
+   EXPRESSIONS
+========================================================= */
+
+/*
+   Happy
+   Soft upward lower curve.
 */
 
-.happy .eye {
-  height: clamp(78px, 19vw, 132px);
+#dabsyFace.expression-happy .eye {
+  height: 47px;
 
   border-radius:
-    45% 45% 65% 65%;
-
-  transform:
-    translateY(4px);
-}
-
-/* Sad
-   Top-heavy expression.
-*/
-
-.sad .eye {
-  border-radius:
-    65% 65% 38% 38%;
-
-  transform:
-    translateY(3px)
-    rotate(0deg);
-}
-
-.sad .left-eye {
-  transform:
-    rotate(4deg);
-}
-
-.sad .right-eye {
-  transform:
-    rotate(-4deg);
-}
-
-/* Curious */
-
-.curious .left-eye {
-  transform:
-    rotate(-4deg)
-    translateY(2px);
-}
-
-.curious .right-eye {
-  transform:
-    rotate(4deg)
-    translateY(-3px);
-}
-
-/* Confused */
-
-.confused .left-eye {
-  transform:
-    rotate(-7deg);
-}
-
-.confused .right-eye {
-  transform:
-    rotate(7deg);
-}
-
-/* Surprised */
-
-.surprised .eye {
-  transform:
-    scale(1.08);
-
-  border-radius:
+    50%
+    50%
+    42%
     42%;
+
+  transform:
+    scaleY(0.72)
+    translateY(7px);
 }
 
-/* Sleepy */
+#dabsyFace.expression-happy .eye::after {
+  opacity: 0.85;
+  transform: scale(1.08);
+}
 
-.sleepy .eye {
-  height: clamp(55px, 14vw, 90px);
+/*
+   Sad
+   Upper edge gently slopes downward toward the centre.
+*/
+
+#dabsyFace.expression-sad .eye {
+  height: 58px;
 
   border-radius:
-    50%;
+    48%
+    48%
+    56%
+    56%;
+
+  transform:
+    rotate(
+      0deg
+    )
+    scaleY(0.88)
+    translateY(5px);
+}
+
+#dabsyFace.expression-sad .left-eye {
+  transform:
+    rotate(7deg)
+    scaleY(0.88)
+    translateY(5px);
+}
+
+#dabsyFace.expression-sad .right-eye {
+  transform:
+    rotate(-7deg)
+    scaleY(0.88)
+    translateY(5px);
+}
+
+/*
+   Thinking
+*/
+
+#dabsyFace.expression-thinking .left-eye {
+  transform:
+    translate(-4px, -5px)
+    scaleY(0.88);
+}
+
+#dabsyFace.expression-thinking .right-eye {
+  transform:
+    translate(7px, -1px)
+    scaleY(0.98);
+}
+
+/*
+   Listening
+*/
+
+#dabsyFace.expression-listening .eye {
+  height: 79px;
+
+  transform: scaleY(1.04);
+}
+
+#dabsyFace.expression-listening .eye::after {
+  opacity: 0.95;
+  transform: scale(1.12);
+}
+
+/*
+   Excited
+*/
+
+#dabsyFace.expression-excited .eye {
+  height: 82px;
+  width: 45px;
+
+  transform: scale(1.04);
+}
+
+#dabsyFace.expression-excited .eye::after {
+  opacity: 1;
+  transform: scale(1.18);
+}
+
+/*
+   Confused
+*/
+
+#dabsyFace.expression-confused .left-eye {
+  transform:
+    rotate(-6deg)
+    translateY(-2px);
+}
+
+#dabsyFace.expression-confused .right-eye {
+  transform:
+    rotate(6deg)
+    translateY(5px)
+    scaleY(0.88);
+}
+
+/*
+   Sleepy
+*/
+
+#dabsyFace.expression-sleepy .eye {
+  height: 31px;
+
+  border-radius: 999px;
+
+  transform:
+    translateY(9px)
+    scaleY(0.75);
+
+  opacity: 0.75;
 }
 
 /* =========================================================
-   CHARACTER STATES
+   CHARACTER MICRO-MOVEMENT
 ========================================================= */
 
-.listening #dabsyFace {
+#character {
   animation:
-    listeningPulse 1.2s ease-in-out infinite;
+    characterFloat 6s ease-in-out infinite;
 }
 
-.listening #faceGlow {
+@keyframes characterFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* =========================================================
+   LISTENING
+========================================================= */
+
+#dabsyWorld.listening #character {
+  transform: translateY(-3px) scale(1.015);
+}
+
+#dabsyWorld.listening #faceGlow {
   opacity: 1;
 
-  transform:
-    translate(-50%, -50%)
-    scale(1.08);
+  transform: scale(1.08);
+
+  filter: blur(29px);
 }
 
-.thinking #dabsyFace {
-  animation:
-    thinkingFloat 1.7s ease-in-out infinite;
-}
+/* =========================================================
+   THINKING
+========================================================= */
 
-.thinking #faceGlow {
-  animation:
-    thinkingGlow 1.7s ease-in-out infinite;
-}
-
-.speaking #dabsyFace {
-  animation:
-    speakingPulse .75s ease-in-out infinite;
-}
-
-.speaking #faceGlow {
+#dabsyWorld.thinking #faceGlow {
   opacity: 1;
-}
 
-@keyframes listeningPulse {
-  0%,
-  100% {
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  50% {
-    transform:
-      translate(-50%, -50%)
-      scale(1.035);
-  }
-}
-
-@keyframes thinkingFloat {
-  0%,
-  100% {
-    transform:
-      translate(-50%, -50%);
-  }
-
-  50% {
-    transform:
-      translate(-50%, calc(-50% - 7px));
-  }
-}
-
-@keyframes speakingPulse {
-  0%,
-  100% {
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  50% {
-    transform:
-      translate(-50%, -50%)
-      scale(1.025);
-  }
+  animation:
+    thinkingGlow 1.8s ease-in-out infinite;
 }
 
 @keyframes thinkingGlow {
   0%,
   100% {
-    transform:
-      translate(-50%, -50%)
-      scale(.95);
-    opacity: .55;
+    transform: scale(0.98);
   }
 
   50% {
-    transform:
-      translate(-50%, -50%)
-      scale(1.08);
-    opacity: 1;
+    transform: scale(1.08);
   }
 }
 
 /* =========================================================
-   PET / RUB REACTION
+   SPEAKING
 ========================================================= */
 
-/* Activated by JS later */
-
-.pet-reaction #dabsyFace {
+#dabsyWorld.speaking #faceGlow {
   animation:
-    petBounce .42s cubic-bezier(.16,1,.3,1);
+    speakingGlow 0.85s ease-in-out infinite;
 }
 
-.pet-reaction #faceGlow {
-  transform:
-    translate(-50%, -50%)
-    scale(1.18);
-
-  opacity: 1;
-}
-
-@keyframes petBounce {
-  0% {
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  45% {
-    transform:
-      translate(-50%, -54%)
-      scale(1.045);
-  }
-
-  75% {
-    transform:
-      translate(-50%, -48%)
-      scale(.985);
-  }
-
+@keyframes speakingGlow {
+  0%,
   100% {
-    transform:
-      translate(-50%, -50%)
-      scale(1);
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
   }
 }
 
@@ -556,134 +574,66 @@ body {
 #hands {
   position: absolute;
 
-  left: 50%;
-  top: 50%;
-
-  width: 100%;
-  height: 100%;
-
-  transform:
-    translate(-50%, -50%);
+  inset: 0;
 
   pointer-events: none;
+
+  z-index: 3;
 }
 
 .hand {
   position: absolute;
 
-  width: 58px;
-  height: 76px;
+  width: 45px;
+  height: 45px;
 
   opacity: 0;
 
   transform:
-    scale(.5);
+    translateY(15px)
+    scale(0.7);
 
   transition:
-    opacity .35s ease,
-    transform .5s cubic-bezier(.16,1,.3,1);
-}
-
-.hand::before {
-  content: "";
-
-  position: absolute;
-
-  left: 13px;
-  bottom: 4px;
-
-  width: 34px;
-  height: 44px;
-
-  border-radius:
-    45% 45% 42% 42%;
-
-  background:
-    linear-gradient(
-      145deg,
-      #dcecff,
-      #8fc8ff
-    );
-
-  box-shadow:
-    0 0 18px rgba(80,160,255,.4);
-}
-
-.hand span,
-.hand span::before,
-.hand span::after {
-  position: absolute;
-
-  width: 10px;
-  height: 29px;
-
-  border-radius: 9px;
-
-  background:
-    #c5e4ff;
-
-  box-shadow:
-    0 0 8px rgba(70,150,255,.25);
+    opacity 300ms ease,
+    transform 500ms cubic-bezier(.2, .8, .2, 1);
 }
 
 .hand span {
-  left: 7px;
-  top: 13px;
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.22),
+      transparent 68%
+    );
+
+  filter: blur(5px);
 }
 
-.hand span::before {
-  content: "";
-
-  left: 14px;
-  top: -5px;
+.leftHand,
+#leftHand {
+  left: 17%;
+  bottom: 5%;
 }
 
-.hand span::after {
-  content: "";
-
-  left: 28px;
-  top: 1px;
+.rightHand,
+#rightHand {
+  right: 17%;
+  bottom: 5%;
 }
 
 .hand.visible {
   opacity: 1;
 
   transform:
+    translateY(0)
     scale(1);
-}
-
-#leftHand {
-  left: -20px;
-  top: 50%;
-
-  transform:
-    translateY(-50%)
-    scale(.5)
-    rotate(12deg);
-}
-
-#rightHand {
-  right: -20px;
-  top: 50%;
-
-  transform:
-    translateY(-50%)
-    scale(.5)
-    rotate(-12deg);
-}
-
-#leftHand.visible {
-  transform:
-    translateY(-50%)
-    scale(1)
-    rotate(12deg);
-}
-
-#rightHand.visible {
-  transform:
-    translateY(-50%)
-    scale(1)
-    rotate(-12deg);
 }
 
 /* =========================================================
@@ -694,328 +644,182 @@ body {
   position: absolute;
 
   left: 50%;
-  bottom: max(8vh, 55px);
+  bottom: 9%;
 
-  transform:
-    translateX(-50%);
+  transform: translateX(-50%);
 
-  width:
-    min(88vw, 780px);
+  width: min(88vw, 620px);
 
   text-align: center;
 
-  z-index: 20;
+  z-index: 10;
 
   pointer-events: none;
-
-  transition:
-    bottom .6s cubic-bezier(.16,1,.3,1),
-    opacity .4s ease,
-    width .5s ease;
 }
 
 #status {
-  font-size: 10px;
+  margin-bottom: 7px;
 
-  letter-spacing: 2px;
+  font-size: 11px;
+
+  letter-spacing: 0.18em;
 
   text-transform: uppercase;
 
-  opacity: .35;
-
-  margin-bottom: 8px;
-
-  transition:
-    opacity .3s ease;
+  opacity: 0.42;
 }
 
 #speech {
+  max-width: 100%;
+
+  padding: 0 15px;
+
   font-size:
-    clamp(16px, 4.2vw, 25px);
+    clamp(
+      15px,
+      3.8vw,
+      20px
+    );
 
-  line-height: 1.45;
+  line-height: 1.5;
 
-  max-height: 25vh;
+  font-weight: 430;
 
-  overflow-y: auto;
-
-  scrollbar-width: none;
+  color: rgba(255, 255, 255, 0.91);
 
   text-shadow:
-    0 0 20px rgba(255,255,255,.10);
+    0 0 18px rgba(255, 255, 255, 0.08);
 
   transition:
-    opacity .25s ease,
-    transform .35s ease;
-}
-
-#speech::-webkit-scrollbar {
-  display: none;
+    opacity 300ms ease,
+    transform 400ms ease;
 }
 
 /* =========================================================
-   STUDY BADGE
-========================================================= */
-
-#studyBadge {
-  position: absolute;
-
-  top:
-    max(18px, env(safe-area-inset-top));
-
-  left: 50%;
-
-  transform:
-    translateX(-50%)
-    translateY(-20px);
-
-  opacity: 0;
-
-  padding:
-    7px 13px;
-
-  border:
-    1px solid rgba(120,180,255,.25);
-
-  border-radius: 999px;
-
-  font-size: 10px;
-
-  letter-spacing: 1.4px;
-
-  transition:
-    opacity .4s ease,
-    transform .4s cubic-bezier(.16,1,.3,1);
-
-  z-index: 30;
-}
-
-.study-mode #studyBadge {
-  opacity: .8;
-
-  transform:
-    translateX(-50%)
-    translateY(0);
-}
-
-/* =========================================================
-   STUDY CONTENT
+   CONTENT / STUDY CARD
 ========================================================= */
 
 #contentArea {
   position: absolute;
 
   left: 50%;
-  top: 50%;
-
-  width: min(92vw, 900px);
-
-  height: 72vh;
+  top: 7%;
 
   transform:
-    translate(-50%, -50%)
-    scale(.94);
+    translateX(-50%)
+    translateY(-12px)
+    scale(0.97);
+
+  width: min(91vw, 680px);
+  max-height: 62vh;
+
+  overflow-y: auto;
+
+  padding: 22px 22px 25px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.018)
+    );
+
+  border:
+    1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
   opacity: 0;
 
   pointer-events: none;
 
-  overflow-y: auto;
-
-  padding:
-    28px 22px 130px;
-
-  scrollbar-width: thin;
-
   transition:
-    opacity .65s ease,
-    transform .65s cubic-bezier(.16,1,.3,1);
+    opacity 420ms ease,
+    transform 500ms cubic-bezier(.2, .8, .2, 1);
 
-  z-index: 2;
+  z-index: 8;
 }
 
-.complex-answer #contentArea {
+body.complex-answer #contentArea {
   opacity: 1;
 
   transform:
-    translate(-50%, -50%)
+    translateX(-50%)
+    translateY(0)
     scale(1);
 
   pointer-events: auto;
 }
 
-.complex-answer #character {
-  left: 82%;
-  top: 19%;
-
-  width: 190px;
-  height: 150px;
-
-  transform:
-    translate(-50%, -50%)
-    scale(.52);
-}
-
-.complex-answer #conversation {
-  bottom: 22px;
-
-  width: 88vw;
-
-  opacity: .95;
-}
-
-/* Make the spoken subtitle compact */
-
-.complex-answer #speech {
-  font-size:
-    clamp(13px, 3vw, 17px);
-
-  line-height: 1.35;
-
-  max-height: 9vh;
-
-  opacity: .7;
-}
-
-/* Title */
-
 #contentTitle {
-  font-size:
-    clamp(23px, 5vw, 38px);
+  font-size: 17px;
 
-  line-height: 1.15;
+  font-weight: 650;
 
-  font-weight: 750;
+  margin-bottom: 14px;
 
-  margin-bottom: 18px;
-
-  letter-spacing: -.4px;
+  letter-spacing: -0.01em;
 }
-
-/* Main explanation */
 
 #contentText {
+  white-space: pre-wrap;
+
   font-size:
-    clamp(16px, 3.5vw, 21px);
+    clamp(
+      14px,
+      3.5vw,
+      17px
+    );
 
   line-height: 1.7;
 
-  white-space: pre-wrap;
-
-  opacity: .92;
+  color: rgba(255, 255, 255, 0.84);
 }
 
 /* =========================================================
-   STUDY MODE VISUAL POLISH
+   STUDY MODE
 ========================================================= */
 
-.study-mode #contentText {
-  text-wrap: pretty;
-}
-
-.study-mode #contentTitle {
-  text-shadow:
-    0 0 28px rgba(80,160,255,.12);
-}
-
-/* =========================================================
-   CONTROLS
-========================================================= */
-
-#bubbleMenu {
+#studyBadge {
   position: absolute;
 
-  inset: 0;
+  top: 20px;
+  left: 50%;
 
-  pointer-events: none;
+  transform: translateX(-50%);
 
-  z-index: 40;
-}
+  padding: 7px 12px;
 
-.bubble {
-  position: absolute;
-
-  width: 60px;
-  height: 60px;
-
-  border-radius: 50%;
-
-  border:
-    1px solid rgba(255,255,255,.12);
+  border-radius: 999px;
 
   background:
-    rgba(15,15,18,.92);
+    rgba(255, 255, 255, 0.055);
 
-  color: white;
+  border:
+    1px solid rgba(255, 255, 255, 0.08);
 
-  display: flex;
+  font-size: 10px;
 
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
+  letter-spacing: 0.13em;
 
   opacity: 0;
 
-  transform:
-    scale(.5)
-    translateY(8px);
-
-  pointer-events: none;
-
   transition:
-    opacity .25s ease,
-    transform .35s cubic-bezier(.16,1,.3,1),
-    background .2s ease;
+    opacity 350ms ease,
+    transform 350ms ease;
 
-  box-shadow:
-    0 10px 35px rgba(0,0,0,.5);
-
-  backdrop-filter:
-    blur(10px);
+  z-index: 15;
 }
 
-.bubble:active {
-  transform:
-    scale(.92);
-}
-
-.menu-open .bubble {
-  opacity: 1;
-
-  transform:
-    scale(1)
-    translateY(0);
-
-  pointer-events: auto;
-}
-
-#studyBubble {
-  left:
-    calc(50% - 120px);
-
-  top:
-    calc(50% - 125px);
-}
-
-#settingsBubble {
-  left:
-    calc(50% + 60px);
-
-  top:
-    calc(50% - 125px);
-}
-
-.bubble span {
-  font-size: 20px;
-}
-
-.bubble small {
-  margin-top: 3px;
-
-  font-size: 8px;
-
-  opacity: .55;
+body.study-mode #studyBadge {
+  opacity: 0.75;
 }
 
 /* =========================================================
@@ -1025,26 +829,113 @@ body {
 #hint {
   position: absolute;
 
-  left: 50%;
-  bottom: 18px;
+  bottom: 3%;
 
-  transform:
-    translateX(-50%);
+  left: 50%;
+
+  transform: translateX(-50%);
 
   font-size: 10px;
 
-  opacity: .22;
+  letter-spacing: 0.08em;
 
-  z-index: 30;
+  opacity: 0.22;
 
   white-space: nowrap;
 
   transition:
-    opacity .4s ease;
+    opacity 300ms ease;
 }
 
-.complex-answer #hint {
+#dabsyWorld:active #hint {
   opacity: 0;
+}
+
+/* =========================================================
+   BUBBLE MENU
+========================================================= */
+
+#bubbleMenu {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 30;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition: opacity 250ms ease;
+}
+
+#dabsyWorld.menu-open #bubbleMenu {
+  opacity: 1;
+
+  pointer-events: auto;
+}
+
+.bubble {
+  position: absolute;
+
+  width: 72px;
+  height: 72px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 50%;
+
+  background:
+    rgba(15, 15, 15, 0.88);
+
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 2px;
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.55);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  cursor: pointer;
+
+  transition:
+    transform 250ms ease,
+    background 250ms ease;
+}
+
+.bubble:hover,
+.bubble:active {
+  transform: scale(1.08);
+
+  background:
+    rgba(35, 35, 35, 0.95);
+}
+
+.bubble span {
+  font-size: 20px;
+}
+
+.bubble small {
+  font-size: 9px;
+
+  opacity: 0.6;
+}
+
+#studyBubble {
+  left: calc(50% - 125px);
+  top: 43%;
+}
+
+#settingsBubble {
+  left: calc(50% + 53px);
+  top: 43%;
 }
 
 /* =========================================================
@@ -1056,232 +947,216 @@ body {
 
   inset: 0;
 
-  display: flex;
+  z-index: 100;
 
+  display: flex;
   align-items: center;
   justify-content: center;
 
   padding: 20px;
 
   background:
-    rgba(0,0,0,.78);
+    rgba(0, 0, 0, 0.68);
 
-  backdrop-filter:
-    blur(14px);
-
-  -webkit-backdrop-filter:
-    blur(14px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   opacity: 0;
 
-  visibility: hidden;
+  pointer-events: none;
 
   transition:
-    opacity .25s ease;
-
-  z-index: 100;
+    opacity 300ms ease;
 }
 
 #settingsPanel.open {
   opacity: 1;
 
-  visibility: visible;
+  pointer-events: auto;
 }
 
 .settingsCard {
   position: relative;
 
-  width:
-    min(92vw, 430px);
+  width: min(92vw, 430px);
 
-  padding: 28px;
+  padding: 30px;
 
-  border:
-    1px solid rgba(255,255,255,.12);
-
-  border-radius: 25px;
+  border-radius: 28px;
 
   background:
-    rgba(16,16,19,.96);
+    linear-gradient(
+      145deg,
+      rgba(30, 30, 30, 0.96),
+      rgba(10, 10, 10, 0.96)
+    );
+
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
 
   box-shadow:
-    0 30px 90px rgba(0,0,0,.65);
+    0 30px 100px rgba(0, 0, 0, 0.8);
 
-  animation:
-    settingsAppear .35s cubic-bezier(.16,1,.3,1);
+  transform:
+    translateY(15px)
+    scale(0.97);
+
+  transition:
+    transform 350ms cubic-bezier(.2, .8, .2, 1);
 }
 
-@keyframes settingsAppear {
-  from {
-    transform:
-      translateY(15px)
-      scale(.96);
-
-    opacity: 0;
-  }
-
-  to {
-    transform:
-      translateY(0)
-      scale(1);
-
-    opacity: 1;
-  }
+#settingsPanel.open .settingsCard {
+  transform:
+    translateY(0)
+    scale(1);
 }
 
 .settingsCard h2 {
-  margin:
-    0 0 8px;
+  margin: 0 0 8px;
 
   font-size: 25px;
 }
 
 .settingsCard p {
-  margin:
-    0 0 20px;
+  margin: 0 0 22px;
 
-  font-size: 13px;
+  font-size: 14px;
 
   line-height: 1.5;
 
-  color:
-    rgba(255,255,255,.5);
-}
-
-#apiKeyInput {
-  width: 100%;
-
-  padding: 13px;
-
-  border:
-    1px solid rgba(255,255,255,.12);
-
-  border-radius: 12px;
-
-  outline: none;
-
-  background:
-    #08080a;
-
-  color: white;
-}
-
-#apiKeyInput:focus {
-  border-color:
-    rgba(130,190,255,.5);
-
-  box-shadow:
-    0 0 0 3px rgba(60,140,255,.08);
-}
-
-#keyStatus {
-  min-height: 20px;
-
-  margin:
-    9px 0 15px;
-
-  font-size: 11px;
-
-  color:
-    rgba(255,255,255,.45);
-}
-
-.primaryButton {
-  width: 100%;
-
-  padding: 13px;
-
-  border: none;
-
-  border-radius: 12px;
-
-  background:
-    #fff;
-
-  color:
-    #000;
-
-  font-weight: 600;
-
-  transition:
-    transform .15s ease,
-    opacity .15s ease;
-}
-
-.primaryButton:active {
-  transform:
-    scale(.97);
-
-  opacity: .8;
+  opacity: 0.55;
 }
 
 .closeButton {
   position: absolute;
 
-  top: 13px;
   right: 15px;
+  top: 15px;
 
-  border: none;
+  width: 35px;
+  height: 35px;
 
-  background: transparent;
+  border: 0;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.06);
 
   color: white;
 
-  font-size: 27px;
+  font-size: 23px;
 
-  opacity: .5;
+  cursor: pointer;
+}
+
+#apiKeyInput {
+  width: 100%;
+
+  padding: 14px;
+
+  border-radius: 13px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.09);
+
+  outline: none;
+
+  background:
+    rgba(255, 255, 255, 0.045);
+
+  color: white;
+
+  font-size: 14px;
+
+  margin-bottom: 10px;
+}
+
+#apiKeyInput:focus {
+  border-color:
+    rgba(255, 255, 255, 0.24);
+}
+
+#keyStatus {
+  min-height: 20px;
+
+  margin-bottom: 12px;
+
+  font-size: 11px;
+
+  opacity: 0.55;
+}
+
+.primaryButton {
+  width: 100%;
+
+  padding: 14px;
+
+  border: 0;
+
+  border-radius: 14px;
+
+  background: white;
+
+  color: black;
+
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.primaryButton:active {
+  transform: scale(0.97);
+
+  opacity: 0.8;
 }
 
 /* =========================================================
    MOBILE
 ========================================================= */
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
 
   #character {
-    top: 44%;
-  }
-
-  .eye {
-    width: 22vw;
-    height: 29vw;
+    height: 42vh;
   }
 
   #dabsyFace {
-    gap: 11vw;
+    width: 190px;
+    height: 105px;
+    gap: 40px;
   }
 
-  .complex-answer #character {
-    left: 80%;
-    top: 17%;
+  .eye {
+    width: 35px;
+    height: 63px;
+  }
 
-    transform:
-      translate(-50%, -50%)
-      scale(.43);
+  #faceGlow {
+    width: 230px;
+    height: 125px;
+  }
+
+  #conversation {
+    bottom: 10%;
   }
 
   #contentArea {
-    width: 94vw;
+    top: 8%;
 
-    height: 71vh;
+    max-height: 58vh;
 
-    padding:
-      22px 16px 120px;
+    padding: 19px;
   }
 
-  #speech {
-    max-height: 24vh;
-  }
-
-  .complex-answer #speech {
-    max-height: 8vh;
-
-    font-size: 13px;
-  }
 }
 
 /* =========================================================
-   ACCESSIBILITY / PERFORMANCE
+   REDUCE MOTION
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1289,11 +1164,9 @@ body {
   *,
   *::before,
   *::after {
-    animation-duration: .001ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-
-    scroll-behavior: auto !important;
-
-    transition-duration: .001ms !important;
+    transition-duration: 0.001ms !important;
   }
-     }
+
+  }
