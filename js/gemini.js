@@ -1,354 +1,219 @@
-import {
-  state,
-  setState
-} from "./state.js";
+/* =========================================
+   D.A.B.S.y GEMINI BRAIN
+   Gemini 3.6 Flash
+========================================= */
 
-import {
-  speak
-} from "./speech.js";
+const GEMINI_MODEL = "gemini-3.6-flash";
 
-
-const world =
-  document.getElementById("dabsyWorld");
-
-const contentTitle =
-  document.getElementById("contentTitle");
-
-const contentText =
-  document.getElementById("contentText");
-
-
-export async function askDABSy(userText) {
+async function askGemini(userText, studyMode = false) {
 
   const apiKey =
-    localStorage.getItem(
-      "dabsy_gemini_key"
-    );
-
+    localStorage.getItem("dabsy_gemini_key");
 
   if (!apiKey) {
-
-    setState(
-      "Gemini Offline",
-      "Double tap me and connect Gemini in Settings."
-    );
-
-
-    speak(
-      "Please connect Gemini in Settings first."
-    );
-
-
-    return;
-
+    throw new Error("NO_API_KEY");
   }
 
-
-  state.thinking = true;
-
-  world.classList.add(
-    "thinking"
-  );
-
-
-  setState(
-    state.studyMode
-      ? "Study Mode"
-      : "Thinking",
-
-    "Let me think..."
-  );
-
-
-  const systemPrompt =
-    state.studyMode
-
-      ? `
-You are D.A.B.S.y, a friendly AI desk study companion.
+  const systemPrompt = studyMode
+    ? `
+You are D.A.B.S.y, a friendly AI desk and study companion.
 
 The user is a Class 11 Science student in India.
 
-You are in STUDY MODE.
+You are currently in STUDY MODE.
 
-Explain concepts clearly and simply.
+Teach the user instead of simply dumping the answer.
 
-Break difficult problems into logical steps.
+Rules:
+- Explain difficult concepts step by step.
+- Show important working for mathematics and science.
+- Use simple examples when useful.
+- Keep explanations understandable when spoken aloud.
+- Avoid unnecessary repetition.
+- Give the answer clearly before adding extra detail when appropriate.
+- Be accurate.
+- If the user asks something ambiguous, ask a short clarification.
 
-Teach the reasoning instead of only giving the final answer.
-
-For mathematics and science, show useful working.
-
-Use headings and short sections when helpful.
-
-Avoid huge walls of text.
-
-Keep the spoken answer concise because D.A.B.S.y will read it aloud.
+Personality:
+- intelligent
+- warm
+- playful
+- slightly cute
+- sleek
+- natural
+- never overly childish
 
 Never say "As an AI".
-
-Sound natural, intelligent, friendly and slightly playful.
+You are D.A.B.S.y, their desk study companion.
 `
 
-      : `
-You are D.A.B.S.y, a friendly AI desk companion.
+    : `
+You are D.A.B.S.y, a smart AI desk companion.
 
-Be intelligent, warm, playful and natural.
+Be:
+- intelligent
+- natural
+- warm
+- playful
+- slightly cute
+- sleek
+- concise when the question is simple
 
-Keep normal conversation reasonably concise.
+Help with:
+- studying
+- explanations
+- planning
+- ideas
+- everyday questions
+- problem solving
 
-Help with studying, planning, ideas and questions.
+D.A.B.S.y should feel like a little character with personality,
+not a generic chatbot.
+
+Use light humor when it fits naturally.
+Do not overdo it.
 
 Never say "As an AI".
-
-You are a desk companion, not a formal chatbot.
 `;
 
+  const response = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/" +
+      GEMINI_MODEL +
+      ":generateContent",
+    {
+      method: "POST",
 
-  try {
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey
+      },
 
-    const response =
-      await fetch(
+      body: JSON.stringify({
 
-        "https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,",
+        systemInstruction: {
+          parts: [
+            {
+              text: systemPrompt
+            }
+          ]
+        },
 
-        {
+        contents: [
+          {
+            role: "user",
 
-          method: "POST",
-
-          headers: {
-
-            "Content-Type":
-              "application/json",
-
-            "x-goog-api-key":
-              apiKey
-
-          },
-
-
-          body:
-            JSON.stringify({
-
-              systemInstruction: {
-
-                parts: [
-                  {
-                    text:
-                      systemPrompt
-                  }
-                ]
-
-              },
-
-
-              contents: [
-
-                {
-
-                  role: "user",
-
-                  parts: [
-                    {
-                      text:
-                        userText
-                    }
-                  ]
-
-                }
-
-              ],
-
-
-              generationConfig: {
-
-                temperature: 0.8,
-
-                maxOutputTokens:
-                  state.studyMode
-                    ? 1200
-                    : 700
-
+            parts: [
+              {
+                text: String(userText)
               }
+            ]
+          }
+        ],
 
-            })
-
+        generationConfig: {
+          maxOutputTokens: 900
         }
 
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-
-        data?.error?.message ||
-        `Gemini error ${response.status}`
-
-      );
-
+      })
     }
+  );
 
+  let data;
 
-    const answer =
-      data
-        ?.candidates?.[0]
-        ?.content?.parts
-        ?.map(
-          part =>
-            part.text || ""
-        )
-        .join("")
-        .trim();
-
-
-    if (!answer) {
-
-      throw new Error(
-        "Gemini returned no answer."
-      );
-
-    }
-
-
-    state.thinking = false;
-
-    world.classList.remove(
-      "thinking"
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(
+      "Gemini returned an unreadable response."
     );
-
-
-    const complex =
-      state.studyMode &&
-      answer.length > 450;
-
-
-    if (complex) {
-
-      contentTitle.textContent =
-        "📚 D.A.B.S.y explains";
-
-      contentText.textContent =
-        answer;
-
-      document.body.classList.add(
-        "complex-answer"
-      );
-
-    }
-
-    else {
-
-      document.body.classList.remove(
-        "complex-answer"
-      );
-
-      contentTitle.textContent =
-        "";
-
-      contentText.textContent =
-        "";
-
-    }
-
-
-    setState(
-      state.studyMode
-        ? "Study Mode"
-        : "DABSy",
-
-      answer
-    );
-
-
-    speak(answer);
-
-
   }
 
-  catch (error) {
+  if (!response.ok) {
 
-    state.thinking = false;
-
-    world.classList.remove(
-      "thinking"
-    );
-
-
-    console.error(
-      "DABSy Gemini:",
-      error
-    );
-
-
-    setState(
-      "Gemini Error",
-      friendlyError(error)
+    throw new Error(
+      data?.error?.message ||
+      `Gemini error ${response.status}`
     );
 
   }
 
+  const answer =
+    data?.candidates?.[0]?.content?.parts
+      ?.map(part => part?.text || "")
+      .join("")
+      .trim();
+
+  if (!answer) {
+
+    throw new Error(
+      "Gemini returned no answer."
+    );
+
+  }
+
+  return answer;
 }
 
 
-function friendlyError(error) {
+/* =========================================
+   ERROR HANDLING
+========================================= */
+
+function friendlyGeminiError(error) {
 
   const message =
-    String(
-      error?.message || ""
-    );
-
+    String(error?.message || "");
 
   const lower =
     message.toLowerCase();
 
-
   if (
-    lower.includes("api key") ||
-    lower.includes("api_key") ||
-    lower.includes("invalid")
+    error?.message === "NO_API_KEY"
   ) {
-
-    return "Your Gemini key looks invalid.";
-
+    return "Gemini isn't connected yet.";
   }
 
+  if (
+    lower.includes("api key") &&
+    (
+      lower.includes("invalid") ||
+      lower.includes("not valid")
+    )
+  ) {
+    return "That Gemini key looks invalid.";
+  }
 
   if (
-    lower.includes("429") ||
-    lower.includes("quota")
+    message.includes("401") ||
+    message.includes("403")
   ) {
+    return "Gemini rejected the API key.";
+  }
 
+  if (
+    message.includes("429") ||
+    lower.includes("quota") ||
+    lower.includes("rate limit")
+  ) {
     return "Gemini's usage limit was reached.";
-
   }
 
-
   if (
-    lower.includes("404") ||
+    message.includes("404") ||
     lower.includes("not found")
   ) {
-
-    return "The Gemini model isn't available.";
-
+    return "Gemini 3.6 Flash isn't available for this request.";
   }
-
 
   if (
-    lower.includes("failed to fetch")
+    lower.includes("failed to fetch") ||
+    lower.includes("network")
   ) {
-
-    return "I can't reach Gemini. Check your internet.";
-
+    return "I can't reach Gemini. Check your internet connection.";
   }
-
 
   return (
     message ||
     "Gemini couldn't respond. Try again."
   );
-
 }
