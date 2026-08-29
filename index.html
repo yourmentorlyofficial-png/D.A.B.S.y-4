@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -29,157 +31,232 @@
     type="image/png"
   >
 
-  <title>D.A.B.S.y</title>
+  <!-- CSS MODULES -->
 
   <link
     rel="stylesheet"
-    href="./styles.css"
+    href="./css/base.css"
   >
+
+  <link
+    rel="stylesheet"
+    href="./css/face.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./css/animations.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./css/interface.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./css/study.css"
+  >
+
+  <title>D.A.B.S.y</title>
+
 </head>
+
 
 <body>
 
-<main id="dabsyWorld">
+  <main id="dabsyWorld">
 
-  <div id="backgroundGlow"></div>
+    <!-- BACKGROUND -->
 
-  <section id="character">
+    <div id="backgroundGlow"></div>
 
-    <div id="faceGlow"></div>
 
-    <div id="dabsyFace">
+    <!-- DABSY -->
 
-      <div class="eye left-eye">
-        <div class="eyeHighlight"></div>
+    <section id="character">
+
+      <div id="faceGlow"></div>
+
+      <div id="dabsyFace">
+
+        <div
+          class="eye left-eye"
+          id="leftEye"
+        >
+          <div class="eyeHighlight"></div>
+        </div>
+
+        <div
+          class="eye right-eye"
+          id="rightEye"
+        >
+          <div class="eyeHighlight"></div>
+        </div>
+
       </div>
 
-      <div class="eye right-eye">
-        <div class="eyeHighlight"></div>
+
+      <!-- HANDS -->
+
+      <div id="hands">
+
+        <div
+          id="leftHand"
+          class="hand"
+        >
+          <span></span>
+        </div>
+
+        <div
+          id="rightHand"
+          class="hand"
+        >
+          <span></span>
+        </div>
+
       </div>
 
+    </section>
+
+
+    <!-- STUDY CONTENT -->
+
+    <section
+      id="contentArea"
+      aria-live="polite"
+    >
+
+      <div id="contentTitle"></div>
+
+      <div id="contentText"></div>
+
+      <div id="visualArea"></div>
+
+    </section>
+
+
+    <!-- SPEECH -->
+
+    <section id="conversation">
+
+      <div id="status">
+        DABSy Online
+      </div>
+
+      <div id="speech">
+        Hello! I'm DABSy. 💙
+      </div>
+
+    </section>
+
+
+    <!-- STUDY BADGE -->
+
+    <div id="studyBadge">
+      📚 STUDY MODE
     </div>
 
-    <div id="hands">
 
-      <div
-        id="leftHand"
-        class="hand"
+    <!-- MENU -->
+
+    <div
+      id="bubbleMenu"
+      aria-hidden="true"
+    >
+
+      <button
+        id="studyBubble"
+        class="bubble"
+        type="button"
       >
-        <span></span>
-      </div>
+        <span>📚</span>
+        <small>Study</small>
+      </button>
 
-      <div
-        id="rightHand"
-        class="hand"
+
+      <button
+        id="settingsBubble"
+        class="bubble"
+        type="button"
       >
-        <span></span>
+        <span>⚙️</span>
+        <small>Settings</small>
+      </button>
+
+    </div>
+
+
+    <!-- PET HINT -->
+
+    <div id="hint">
+      Tap & hold to talk
+    </div>
+
+  </main>
+
+
+  <!-- SETTINGS -->
+
+  <section
+    id="settingsPanel"
+    aria-hidden="true"
+  >
+
+    <div class="settingsCard">
+
+      <button
+        id="closeSettings"
+        class="closeButton"
+        type="button"
+      >
+        ×
+      </button>
+
+
+      <h2>
+        D.A.B.S.y
+      </h2>
+
+
+      <p>
+        Connect Gemini to give D.A.B.S.y its brain.
+      </p>
+
+
+      <input
+        id="apiKeyInput"
+        type="password"
+        placeholder="Gemini API key"
+        autocomplete="off"
+      >
+
+
+      <div id="keyStatus">
+        No Gemini key connected.
       </div>
 
+
+      <button
+        id="saveKey"
+        class="primaryButton"
+        type="button"
+      >
+        Connect Gemini
+      </button>
+
     </div>
 
   </section>
 
 
-  <section id="contentArea">
+  <!-- JAVASCRIPT -->
 
-    <div id="contentTitle"></div>
-
-    <div id="contentText"></div>
-
-    <div id="visualArea"></div>
-
-  </section>
-
-
-  <section id="conversation">
-
-    <div id="status">
-      DABSy
-    </div>
-
-    <div id="speech">
-      Hello! I'm DABSy. 💙
-    </div>
-
-  </section>
-
-
-  <div id="studyBadge">
-    📚 STUDY MODE
-  </div>
-
-
-  <div id="bubbleMenu">
-
-    <button
-      id="studyBubble"
-      class="bubble"
-      type="button"
-    >
-      <span>📚</span>
-      <small>Study</small>
-    </button>
-
-    <button
-      id="settingsBubble"
-      class="bubble"
-      type="button"
-    >
-      <span>⚙️</span>
-      <small>Settings</small>
-    </button>
-
-  </div>
-
-
-  <div id="hint">
-    Tap & hold D.A.B.S.y to talk
-  </div>
-
-</main>
-
-
-<section id="settingsPanel">
-
-  <div class="settingsCard">
-
-    <button
-      id="closeSettings"
-      class="closeButton"
-      type="button"
-    >
-      ×
-    </button>
-
-    <h2>D.A.B.S.y</h2>
-
-    <p>
-      Connect Gemini to give D.A.B.S.y its brain.
-    </p>
-
-    <input
-      id="apiKeyInput"
-      type="password"
-      placeholder="Gemini API key"
-      autocomplete="off"
-    >
-
-    <div id="keyStatus"></div>
-
-    <button
-      id="saveKey"
-      class="primaryButton"
-      type="button"
-    >
-      Connect Gemini
-    </button>
-
-  </div>
-
-</section>
-
-
-<script src="./app.js"></script>
+  <script
+    type="module"
+    src="./js/main.js"
+  ></script>
 
 </body>
+
 </html>
