@@ -1,0 +1,357 @@
+#conversation {
+  position: absolute;
+
+  left: 50%;
+  bottom: 9%;
+
+  transform: translateX(-50%);
+
+  width: min(88vw, 620px);
+
+  text-align: center;
+
+  pointer-events: none;
+
+  z-index: 10;
+}
+
+
+#status {
+  margin-bottom: 9px;
+
+  font-size: 11px;
+
+  font-weight: 650;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  color: rgba(255,255,255,0.32);
+}
+
+
+#speech {
+  max-width: 100%;
+
+  font-size: clamp(15px, 3.7vw, 20px);
+
+  line-height: 1.45;
+
+  color: rgba(255,255,255,0.9);
+
+  text-wrap: balance;
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.35s ease;
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+#bubbleMenu {
+  position: absolute;
+
+  left: 50%;
+  top: 55%;
+
+  transform: translate(-50%, -50%) scale(0.8);
+
+  display: flex;
+
+  gap: 18px;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.35s cubic-bezier(.2,.8,.2,1);
+
+  z-index: 20;
+}
+
+
+#dabsyWorld.menu-open #bubbleMenu {
+  opacity: 1;
+
+  pointer-events: auto;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+
+
+.bubble {
+  width: 76px;
+  height: 76px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,0.07);
+
+  border:
+    1px solid rgba(255,255,255,0.11);
+
+  color: white;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.5);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.bubble:active {
+  transform: scale(0.9);
+}
+
+
+.bubble span {
+  font-size: 22px;
+}
+
+
+.bubble small {
+  font-size: 9px;
+
+  color: rgba(255,255,255,0.55);
+}
+
+
+/* =========================
+   STUDY BADGE
+========================= */
+
+#studyBadge {
+  position: absolute;
+
+  top: max(20px, env(safe-area-inset-top));
+
+  left: 50%;
+
+  transform:
+    translateX(-50%)
+    translateY(-10px);
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,0.06);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  color:
+    rgba(255,255,255,0.6);
+
+  font-size: 10px;
+
+  letter-spacing: 0.08em;
+
+  opacity: 0;
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+
+  pointer-events: none;
+}
+
+
+body.study-mode #studyBadge {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+#settingsPanel {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 100;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background:
+    rgba(0,0,0,0.72);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: opacity 0.25s ease;
+}
+
+
+#settingsPanel.open {
+  opacity: 1;
+
+  pointer-events: auto;
+}
+
+
+.settingsCard {
+  position: relative;
+
+  width: min(92vw, 430px);
+
+  padding: 28px;
+
+  border-radius: 28px;
+
+  background:
+    rgba(20,20,20,0.88);
+
+  border:
+    1px solid rgba(255,255,255,0.1);
+
+  box-shadow:
+    0 30px 100px rgba(0,0,0,0.7);
+
+  transform: translateY(15px) scale(0.97);
+
+  transition:
+    transform 0.3s cubic-bezier(.2,.8,.2,1);
+}
+
+
+#settingsPanel.open .settingsCard {
+  transform: translateY(0) scale(1);
+}
+
+
+.settingsCard h2 {
+  margin: 0 0 8px;
+
+  font-size: 25px;
+}
+
+
+.settingsCard p {
+  margin: 0 0 20px;
+
+  color: rgba(255,255,255,0.48);
+
+  line-height: 1.5;
+
+  font-size: 14px;
+}
+
+
+.closeButton {
+  position: absolute;
+
+  right: 16px;
+  top: 16px;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,0.07);
+
+  color: white;
+
+  font-size: 23px;
+
+  cursor: pointer;
+}
+
+
+#apiKeyInput {
+  width: 100%;
+
+  padding: 14px;
+
+  border-radius: 15px;
+
+  border:
+    1px solid rgba(255,255,255,0.1);
+
+  outline: none;
+
+  background:
+    rgba(255,255,255,0.05);
+
+  color: white;
+
+  margin-bottom: 12px;
+}
+
+
+#keyStatus {
+  min-height: 20px;
+
+  margin-bottom: 15px;
+
+  font-size: 12px;
+
+  color: rgba(255,255,255,0.45);
+}
+
+
+.primaryButton {
+  width: 100%;
+
+  padding: 14px;
+
+  border-radius: 15px;
+
+  background: white;
+
+  color: black;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease;
+}
+
+
+.primaryButton:active {
+  transform: scale(0.97);
+}
