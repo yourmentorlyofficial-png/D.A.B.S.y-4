@@ -1,35 +1,42 @@
-const CACHE_NAME = "dabsy-premium-v99";
+const CACHE_NAME = "dabsy-v1";
 
-const APP_FILES = [
+const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
   "./manifest.json",
-  "./icon-512×512.png"
+
+  "./css/base.css",
+  "./css/face.css",
+  "./css/animations.css",
+  "./css/interface.css",
+  "./css/study.css",
+
+  "./js/main.js",
+  "./js/state.js",
+  "./js/face.js",
+  "./js/interaction.js",
+  "./js/speech.js",
+  "./js/gemini.js",
+  "./js/menu.js",
+  "./js/study.js",
+  "./js/pwa.js",
+
+  "./icon.png"
 ];
 
-
-/* =========================
-   INSTALL
-========================= */
 
 self.addEventListener("install", event => {
 
   event.waitUntil(
 
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_FILES))
+      .then(cache => cache.addAll(APP_SHELL))
       .then(() => self.skipWaiting())
 
   );
 
 });
 
-
-/* =========================
-   ACTIVATE
-========================= */
 
 self.addEventListener("activate", event => {
 
@@ -54,80 +61,30 @@ self.addEventListener("activate", event => {
 });
 
 
-/* =========================
-   FETCH
-========================= */
-
 self.addEventListener("fetch", event => {
 
-  const request = event.request;
-
-  /*
-    Never interfere with Gemini/API requests.
-  */
-
-  if (
-    request.url.includes(
-      "generativelanguage.googleapis.com"
-    )
-  ) {
+  if (event.request.method !== "GET") {
     return;
   }
-
-
-  /*
-    Only handle GET requests.
-  */
-
-  if (request.method !== "GET") {
-    return;
-  }
-
 
   event.respondWith(
 
-    fetch(request)
+    fetch(event.request)
       .then(response => {
 
-        /*
-          Save successful same-origin
-          files into the cache.
-        */
+        const copy = response.clone();
 
-        if (
-          response &&
-          response.status === 200 &&
-          new URL(request.url).origin === location.origin
-        ) {
-
-          const copy = response.clone();
-
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(request, copy);
-            });
-
-        }
+        caches.open(CACHE_NAME)
+          .then(cache => {
+            cache.put(event.request, copy);
+          });
 
         return response;
 
       })
       .catch(() => {
 
-        /*
-          Offline fallback.
-        */
-
-        return caches.match(request)
-          .then(cached => {
-
-            if (cached) {
-              return cached;
-            }
-
-            return caches.match("./index.html");
-
-          });
+        return caches.match(event.request);
 
       })
 
