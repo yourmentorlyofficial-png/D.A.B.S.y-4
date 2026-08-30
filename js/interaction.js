@@ -1,35 +1,32 @@
 // js/interaction.js
-import { getState, setState } from './state.js';
+import { state, setState } from './state.js';
 import { startListening } from './speech.js';
 
-export function setupInteractions() {
-    const faceContainer = document.getElementById('face-container') || document.querySelector('.face-container') || document.body;
+export function setupInteraction() {
+    // Target the main character wrapper or world where touches happen
+    const touchTarget = document.getElementById('character') || document.getElementById('dabsyWorld') || document.body;
     
-    if (!faceContainer) {
-        console.warn("DABSy Warning: Face container not found for interactions.");
+    if (!touchTarget) {
+        console.warn("DABSy Warning: Touch target container not found.");
         return;
     }
 
-    let holdTimer = null;
     let isHolding = false;
 
-    // Handle touch or click events to initiate interaction (listening state)
-    const triggerStart = (e) => {
-        // Prevent default behavior to avoid scrolling/zooming weirdness on mobile touch
+    const handleTouchStart = (e) => {
+        // Prevent default mobile scrolling/zooming behavior on touch
         if (e.type === 'touchstart') {
             e.preventDefault();
         }
 
-        const currentState = getState().status;
-        // Don't interrupt if already speaking or thinking heavily, unless desired
-        if (currentState === 'speaking' || currentState === 'thinking') {
+        // Do not interrupt if DABSy is busy thinking or speaking loudly
+        if (state.speaking || state.thinking) {
             return;
         }
 
         isHolding = true;
-        setState({ status: 'listening' });
-        
-        // Trigger microphone activation workflow
+
+        // If already listening, toggle off or restart, else start listening
         if (typeof startListening === 'function') {
             startListening();
         } else {
@@ -37,20 +34,19 @@ export function setupInteractions() {
         }
     };
 
-    const triggerEnd = (e) => {
+    const handleTouchEnd = (e) => {
         if (!isHolding) return;
         isHolding = false;
-        clearTimeout(holdTimer);
     };
 
-    // Event Listeners for Touch & Mouse interaction
-    faceContainer.addEventListener('touchstart', triggerStart, { passive: false });
-    faceContainer.addEventListener('touchend', triggerEnd);
-    faceContainer.addEventListener('touchcancel', triggerEnd);
+    // Attach both touch and mouse click events so it works on desktop and mobile
+    touchTarget.addEventListener('touchstart', handleTouchStart, { passive: false });
+    touchTarget.addEventListener('touchend', handleTouchEnd);
+    touchTarget.addEventListener('touchcancel', handleTouchEnd);
 
-    faceContainer.addEventListener('mousedown', triggerStart);
-    faceContainer.addEventListener('mouseup', triggerEnd);
-    faceContainer.addEventListener('mouseleave', triggerEnd);
+    touchTarget.addEventListener('mousedown', handleTouchStart);
+    touchTarget.addEventListener('mouseup', handleTouchEnd);
+    touchTarget.addEventListener('mouseleave', handleTouchEnd);
 
-    console.log("DABSy Interactions initialized successfully.");
+    console.log("DABSy Interaction system initialized successfully.");
 }
