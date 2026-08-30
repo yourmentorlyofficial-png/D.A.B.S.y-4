@@ -1,6 +1,6 @@
 const GEMINI_MODEL = "gemini-3.6-flash";
 
-async function askGemini(userText, studyMode = false) {
+export async function askDABSy(userText, studyMode = false) {
 
   const apiKey =
     localStorage.getItem("dabsy_gemini_key");
@@ -78,6 +78,7 @@ Never say "As an AI".
         ],
 
         generationConfig: {
+          temperature: 0.8,
           maxOutputTokens: 900
         }
       })
