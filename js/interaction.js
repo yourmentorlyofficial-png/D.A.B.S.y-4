@@ -1,139 +1,56 @@
-import {
-  state,
-  setState
-} from "./state.js";
+// js/interaction.js
+import { getState, setState } from './state.js';
+import { startListening } from './speech.js';
 
-import {
-  startListening
-} from "./speech.js";
-
-
-const world =
-  document.getElementById("dabsyWorld");
-
-const face =
-  document.getElementById("dabsyFace");
-
-
-export function setupInteraction() {
-
-  if (!world) return;
-
-
-  world.addEventListener(
-    "pointerdown",
-    event => {
-
-      if (
-        event.target.closest(".bubble") ||
-        event.target.closest(".settingsCard") ||
-        event.target.closest("button") ||
-        event.target.closest("input")
-      ) {
+export function setupInteractions() {
+    const faceContainer = document.getElementById('face-container') || document.querySelector('.face-container') || document.body;
+    
+    if (!faceContainer) {
+        console.warn("DABSy Warning: Face container not found for interactions.");
         return;
-      }
-
-
-      clearTimeout(state.touchTimer);
-
-
-      state.touchTimer = setTimeout(() => {
-
-        startListening();
-
-      }, 300);
-
     }
-  );
 
+    let holdTimer = null;
+    let isHolding = false;
 
-  world.addEventListener(
-    "pointerup",
-    () => {
+    // Handle touch or click events to initiate interaction (listening state)
+    const triggerStart = (e) => {
+        // Prevent default behavior to avoid scrolling/zooming weirdness on mobile touch
+        if (e.type === 'touchstart') {
+            e.preventDefault();
+        }
 
-      clearTimeout(state.touchTimer);
+        const currentState = getState().status;
+        // Don't interrupt if already speaking or thinking heavily, unless desired
+        if (currentState === 'speaking' || currentState === 'thinking') {
+            return;
+        }
 
-    }
-  );
+        isHolding = true;
+        setState({ status: 'listening' });
+        
+        // Trigger microphone activation workflow
+        if (typeof startListening === 'function') {
+            startListening();
+        } else {
+            console.error("startListening function is not available.");
+        }
+    };
 
+    const triggerEnd = (e) => {
+        if (!isHolding) return;
+        isHolding = false;
+        clearTimeout(holdTimer);
+    };
 
-  world.addEventListener(
-    "pointercancel",
-    () => {
+    // Event Listeners for Touch & Mouse interaction
+    faceContainer.addEventListener('touchstart', triggerStart, { passive: false });
+    faceContainer.addEventListener('touchend', triggerEnd);
+    faceContainer.addEventListener('touchcancel', triggerEnd);
 
-      clearTimeout(state.touchTimer);
+    faceContainer.addEventListener('mousedown', triggerStart);
+    faceContainer.addEventListener('mouseup', triggerEnd);
+    faceContainer.addEventListener('mouseleave', triggerEnd);
 
-    }
-  );
-
-
-  world.addEventListener(
-    "dblclick",
-    event => {
-
-      if (
-        event.target.closest(".bubble") ||
-        event.target.closest("button")
-      ) {
-        return;
-      }
-
-
-      document.dispatchEvent(
-        new CustomEvent("dabsy:toggle-menu")
-      );
-
-    }
-  );
-
-
-  /* subtle future pet foundation */
-
-  world.addEventListener(
-    "pointermove",
-    event => {
-
-      if (
-        !event.buttons ||
-        !face
-      ) {
-        return;
-      }
-
-
-      const rect =
-        face.getBoundingClientRect();
-
-
-      const x =
-        event.clientX - rect.left;
-
-
-      if (x < rect.width / 2) {
-
-        face.style.transform =
-          "translateX(-3px)";
-
-      } else {
-
-        face.style.transform =
-          "translateX(3px)";
-
-      }
-
-    }
-  );
-
-
-  world.addEventListener(
-    "pointerleave",
-    () => {
-
-      if (!face) return;
-
-      face.style.transform = "";
-
-    }
-  );
-
+    console.log("DABSy Interactions initialized successfully.");
 }
